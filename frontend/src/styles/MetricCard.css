@@ -1,0 +1,38 @@
+.metric-card {
+  padding: 16px;
+}
+
+.metric-card-label-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-400);
+  margin-bottom: 8px;
+}
+.metric-card-label-row svg {
+  width: 14px;
+  height: 14px;
+}
+.metric-card-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.metric-card-value {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.metric-card-value-neutral { color: var(--ink-900); }
+.metric-card-value-critical { color: var(--critical-600); }
+.metric-card-value-warning { color: var(--warning-600); }
+.metric-card-value-success { color: var(--success-600); }
+.metric-card-value-brand { color: var(--brand-600); }
+
+.metric-card-sub {
+  font-size: 12px;
+  color: var(--ink-400);
+  margin-top: 4px;
+}

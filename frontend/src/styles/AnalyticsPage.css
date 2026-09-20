@@ -1,0 +1,14 @@
+.analytics-grid {
+  display: grid;
+  gap: 24px;
+}
+.analytics-card {
+  padding: 20px;
+}
+.analytics-card-wide {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 1024px) {
+  .analytics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

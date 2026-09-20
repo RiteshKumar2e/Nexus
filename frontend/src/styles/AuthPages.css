@@ -1,0 +1,137 @@
+.auth-shell {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  background: #ffffff;
+}
+
+.auth-form-side {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 24px;
+}
+
+.auth-form-box {
+  max-width: 384px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.auth-back-link {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-500);
+}
+.auth-back-link:hover {
+  color: var(--ink-800);
+}
+.auth-back-link svg {
+  width: 14px;
+  height: 14px;
+}
+
+.auth-title {
+  margin-top: 32px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink-900);
+  letter-spacing: -0.01em;
+}
+
+.auth-subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--ink-500);
+}
+
+.auth-error {
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  border-radius: var(--radius);
+  background: var(--critical-100);
+  color: var(--critical-700);
+  font-size: 14px;
+  padding: 12px 14px;
+}
+
+.auth-form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-footnote {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--ink-500);
+  text-align: center;
+}
+.auth-footnote a {
+  font-weight: 600;
+  color: var(--brand-600);
+}
+
+.auth-demo-hint {
+  margin-top: 32px;
+  font-size: 12px;
+  color: var(--ink-400);
+  text-align: center;
+}
+
+.auth-role-list {
+  display: grid;
+  gap: 8px;
+}
+
+.auth-visual-side {
+  display: none;
+  flex: 1 1 auto;
+  background: var(--ink-900);
+  position: relative;
+  overflow: hidden;
+}
+.auth-visual-glow {
+  position: absolute;
+  inset: 0;
+}
+.auth-visual-content {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 64px;
+  color: #ffffff;
+  max-width: 512px;
+}
+.auth-visual-eyebrow {
+  color: var(--brand-300);
+  margin-bottom: 16px;
+}
+.auth-visual-title {
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.auth-visual-text {
+  margin-top: 16px;
+  color: var(--ink-300);
+}
+
+@media (min-width: 1024px) {
+  .auth-visual-side { display: block; }
+}

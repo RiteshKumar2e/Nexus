@@ -1,0 +1,61 @@
+.planner-card {
+  padding: 20px;
+}
+
+.planner-risk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.planner-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.planner-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  border-radius: var(--radius);
+  background: var(--ink-50);
+  padding: 10px 12px;
+}
+.planner-action-eta {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--brand-600);
+}
+
+.planner-two-col {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 640px) {
+  .planner-two-col { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.planner-resource-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.planner-conflict-row {
+  font-size: 14px;
+  color: var(--ink-600);
+}
+
+.planner-approval-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.planner-approval-actions {
+  display: flex;
+  gap: 8px;
+}

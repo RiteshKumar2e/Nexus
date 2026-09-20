@@ -1,0 +1,39 @@
+/* Shared by ResourcesPage, HospitalsPage, SheltersPage */
+.stat-card-category {
+  font-size: 12px;
+  color: var(--ink-400);
+  margin-bottom: 12px;
+}
+
+.stat-card-progress {
+  margin-bottom: 8px;
+}
+
+.stat-card-quad {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  text-align: center;
+  font-size: 12px;
+}
+.stat-card-quad-value {
+  font-weight: 700;
+  color: var(--ink-800);
+}
+.stat-card-quad-label {
+  color: var(--ink-400);
+}
+
+.stat-card-trio {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.stat-card-pct {
+  font-size: 12px;
+  color: var(--ink-500);
+  margin-bottom: 12px;
+}

@@ -1,0 +1,31 @@
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-mark {
+  border-radius: 7px;
+  background: var(--brand-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark svg {
+  width: 62%;
+  height: 62%;
+}
+
+.logo-mark-sm { width: 24px; height: 24px; }
+.logo-mark-md { width: 28px; height: 28px; }
+.logo-mark-lg { width: 36px; height: 36px; }
+
+.logo-text {
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+.logo-text-sm { font-size: 14px; }
+.logo-text-md { font-size: 16px; }
+.logo-text-lg { font-size: 20px; }

@@ -1,0 +1,102 @@
+.sim-scenario {
+  font-size: 14px;
+  color: var(--ink-400);
+}
+
+.sim-data-card {
+  padding: 16px;
+}
+.sim-data-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warning-600);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 4px;
+}
+.sim-data-text {
+  font-size: 14px;
+  color: var(--ink-500);
+}
+.sim-data-text strong {
+  color: var(--ink-800);
+}
+
+.sim-controls {
+  padding: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sim-layout {
+  display: grid;
+  gap: 24px;
+}
+
+.sim-events-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.sim-event-btn {
+  padding: 16px;
+  text-align: left;
+  transition: box-shadow 150ms, border-color 150ms;
+}
+.sim-event-btn:hover:not(:disabled) {
+  border-color: var(--brand-300);
+  box-shadow: var(--shadow-card);
+}
+.sim-event-btn:disabled {
+  opacity: 0.5;
+}
+
+.sim-event-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.sim-event-head svg {
+  width: 16px;
+  height: 16px;
+  color: var(--brand-600);
+}
+.sim-event-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--ink-900);
+}
+.sim-event-desc {
+  font-size: 12px;
+  color: var(--ink-500);
+}
+
+.sim-result-card {
+  padding: 16px;
+}
+.sim-result-pre {
+  font-size: 12px;
+  color: var(--ink-600);
+  background: var(--ink-50);
+  border-radius: var(--radius);
+  padding: 12px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
+.sim-readonly-note {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--ink-500);
+}
+
+@media (min-width: 640px) {
+  .sim-events-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (min-width: 1024px) {
+  .sim-layout { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sim-layout > :first-child { grid-column: span 2 / span 2; }
+}

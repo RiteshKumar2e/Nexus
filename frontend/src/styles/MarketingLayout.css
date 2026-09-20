@@ -1,0 +1,10 @@
+.marketing-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.marketing-layout-main {
+  flex: 1 1 auto;
+}
