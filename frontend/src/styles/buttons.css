@@ -18,32 +18,32 @@
 
 .btn-primary {
   background: var(--brand-600);
-  color: #ffffff;
-  box-shadow: var(--shadow-subtle);
+  color: var(--ink-900);
+  border: 1px solid transparent;
 }
 .btn-primary:hover {
-  background: var(--brand-700);
+  background: var(--brand-600-hover);
 }
 
 .btn-secondary {
-  background: #ffffff;
+  background: var(--bg-surface);
   color: var(--ink-800);
   border: 1px solid var(--ink-200);
 }
 .btn-secondary:hover {
-  background: var(--ink-50);
+  background: var(--bg-subtle);
 }
 
 .btn-ghost {
   color: var(--ink-600);
 }
 .btn-ghost:hover {
-  background: var(--ink-100);
+  background: var(--bg-subtle);
 }
 
 .btn-danger {
   background: var(--critical-600);
-  color: #ffffff;
+  color: #fffdf7;
 }
 .btn-danger:hover {
   background: var(--critical-700);

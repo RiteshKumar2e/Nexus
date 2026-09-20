@@ -1,6 +1,6 @@
 .dash-shell {
   min-height: 100vh;
-  background: var(--ink-50);
+  background: var(--bg-page);
   display: flex;
 }
 
@@ -9,7 +9,7 @@
   width: 256px;
   flex-shrink: 0;
   border-right: 1px solid var(--ink-100);
-  background: #ffffff;
+  background: var(--bg-surface);
   position: fixed;
   inset: 0 auto 0 0;
 }
@@ -106,7 +106,7 @@
   height: 32px;
   border-radius: 999px;
   background: var(--brand-600);
-  color: #ffffff;
+  color: var(--ink-900);
   font-size: 12px;
   font-weight: 700;
   display: flex;
@@ -147,13 +147,13 @@
 .dash-mobile-backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(15, 20, 25, 0.4);
+  background: rgba(32, 35, 31, 0.4);
 }
 .dash-mobile-panel {
   position: absolute;
   inset: 0 auto 0 0;
   width: 288px;
-  background: #ffffff;
+  background: var(--bg-surface);
   box-shadow: var(--shadow-popover);
 }
 .dash-mobile-close {
@@ -174,7 +174,7 @@
 .dash-topbar {
   height: 64px;
   border-bottom: 1px solid var(--ink-100);
-  background: #ffffff;
+  background: var(--bg-surface);
   display: flex;
   align-items: center;
   justify-content: space-between;

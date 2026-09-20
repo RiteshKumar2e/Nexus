@@ -7,7 +7,7 @@ import LoadingState from '../components/LoadingState.jsx'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AnalyticsPage.css'
 
-const SEVERITY_COLORS = { LOW: '#2FA96B', MEDIUM: '#E4A11A', HIGH: '#DC3D3D', CRITICAL: '#A82A2A' }
+const SEVERITY_COLORS = { LOW: '#4B7A52', MEDIUM: '#C97A2E', HIGH: '#A83A3A', CRITICAL: '#8A2E2E' }
 
 export default function AnalyticsPage() {
   useDocumentTitle('Analytics')
@@ -58,11 +58,11 @@ export default function AnalyticsPage() {
           <p className="section-label" style={{ marginBottom: 16 }}>Incidents by Type</p>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={typeData} layout="vertical" margin={{ left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E7EBEE" horizontal={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DDD8C8" horizontal={false} />
               <XAxis type="number" tick={{ fontSize: 11 }} allowDecimals={false} />
               <YAxis type="category" dataKey="name" width={110} tick={{ fontSize: 11 }} />
               <Tooltip />
-              <Bar dataKey="value" fill="#2563D6" radius={[0, 4, 4, 0]} />
+              <Bar dataKey="value" fill="#C89B3C" radius={[0, 4, 4, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -71,12 +71,12 @@ export default function AnalyticsPage() {
           <p className="section-label" style={{ marginBottom: 16 }}>Hospital Load (%)</p>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={hospitalData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E7EBEE" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DDD8C8" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={50} />
               <YAxis tick={{ fontSize: 11 }} unit="%" />
               <Tooltip />
               <Bar dataKey="load" radius={[4, 4, 0, 0]}>
-                {hospitalData.map((d, i) => <Cell key={i} fill={d.load >= 90 ? '#DC3D3D' : d.load >= 75 ? '#E4A11A' : '#2FA96B'} />)}
+                {hospitalData.map((d, i) => <Cell key={i} fill={d.load >= 90 ? '#A83A3A' : d.load >= 75 ? '#C97A2E' : '#4B7A52'} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -86,12 +86,12 @@ export default function AnalyticsPage() {
           <p className="section-label" style={{ marginBottom: 16 }}>Shelter Occupancy (%)</p>
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={shelterData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E7EBEE" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DDD8C8" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={50} />
               <YAxis tick={{ fontSize: 11 }} unit="%" />
               <Tooltip />
               <Bar dataKey="occupancy" radius={[4, 4, 0, 0]}>
-                {shelterData.map((d, i) => <Cell key={i} fill={d.occupancy >= 100 ? '#DC3D3D' : d.occupancy >= 85 ? '#E4A11A' : '#2FA96B'} />)}
+                {shelterData.map((d, i) => <Cell key={i} fill={d.occupancy >= 100 ? '#A83A3A' : d.occupancy >= 85 ? '#C97A2E' : '#4B7A52'} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -101,14 +101,14 @@ export default function AnalyticsPage() {
           <p className="section-label" style={{ marginBottom: 16 }}>Resource Allocation</p>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={resourceData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E7EBEE" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#DDD8C8" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="available" stackId="a" fill="#2FA96B" name="Available" />
-              <Bar dataKey="allocated" stackId="a" fill="#2563D6" name="Allocated" />
-              <Bar dataKey="consumed" stackId="a" fill="#9CA6B0" name="Consumed" />
+              <Bar dataKey="available" stackId="a" fill="#4B7A52" name="Available" />
+              <Bar dataKey="allocated" stackId="a" fill="#C89B3C" name="Allocated" />
+              <Bar dataKey="consumed" stackId="a" fill="#A3A59A" name="Consumed" />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -6,7 +6,6 @@ import '../../styles/Hero.css'
 export default function Hero() {
   return (
     <section className="hero">
-      <div className="hero-glow" />
       <div className="container-page hero-content">
         <motion.p
           initial={{ opacity: 0, y: 8 }}

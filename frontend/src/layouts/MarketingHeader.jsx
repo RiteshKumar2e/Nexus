@@ -1,23 +1,22 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Menu, X, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Menu, X } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import '../styles/MarketingHeader.css'
 
 const NAV = [
-  { label: 'Product', href: '#product' },
+  { label: 'Home', to: '/' },
+  { label: 'About', href: '#about' },
+  { label: 'Features', href: '#features' },
   { label: 'How it works', href: '#how-it-works' },
-  { label: 'Capabilities', href: '#capabilities' },
-  { label: 'Simulation', href: '#simulation' },
-  { label: 'Technology', href: '#technology' },
+  { label: 'Contact', href: '#contact' },
 ]
 
 export default function MarketingHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const { user } = useAuth()
-  const navigate = useNavigate()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -31,26 +30,23 @@ export default function MarketingHeader() {
         <Logo />
 
         <nav className="site-nav">
-          {NAV.map((item) => (
-            <a key={item.href} href={item.href} className="site-nav-link">
-              {item.label}
-            </a>
-          ))}
+          {NAV.map((item) =>
+            item.to ? (
+              <Link key={item.label} to={item.to} className="site-nav-link">
+                {item.label}
+              </Link>
+            ) : (
+              <a key={item.label} href={item.href} className="site-nav-link">
+                {item.label}
+              </a>
+            )
+          )}
         </nav>
 
         <div className="site-header-actions">
-          {user ? (
-            <button onClick={() => navigate('/command-center')} className="btn btn-primary">
-              Command Center <ArrowRight style={{ width: 16, height: 16 }} />
-            </button>
-          ) : (
-            <>
-              <Link to="/login" className="btn btn-ghost">Sign in</Link>
-              <Link to="/register" className="btn btn-primary">
-                Launch Command Center
-              </Link>
-            </>
-          )}
+          <Link to={user ? '/command-center' : '/login'} className="btn btn-primary">
+            {user ? 'Command Center' : 'Sign in'}
+          </Link>
         </div>
 
         <button className="site-header-burger" onClick={() => setOpen((v) => !v)}>
@@ -61,20 +57,21 @@ export default function MarketingHeader() {
       {open && (
         <div className="site-mobile-menu">
           <div className="site-mobile-menu-inner">
-            {NAV.map((item) => (
-              <a key={item.href} href={item.href} onClick={() => setOpen(false)} className="site-mobile-link">
-                {item.label}
-              </a>
-            ))}
-            <div className="site-mobile-actions">
-              {user ? (
-                <Link to="/command-center" className="btn btn-primary">Command Center</Link>
+            {NAV.map((item) =>
+              item.to ? (
+                <Link key={item.label} to={item.to} onClick={() => setOpen(false)} className="site-mobile-link">
+                  {item.label}
+                </Link>
               ) : (
-                <>
-                  <Link to="/login" className="btn btn-secondary">Sign in</Link>
-                  <Link to="/register" className="btn btn-primary">Launch Command Center</Link>
-                </>
-              )}
+                <a key={item.label} href={item.href} onClick={() => setOpen(false)} className="site-mobile-link">
+                  {item.label}
+                </a>
+              )
+            )}
+            <div className="site-mobile-actions">
+              <Link to={user ? '/command-center' : '/login'} className="btn btn-primary">
+                {user ? 'Command Center' : 'Sign in'}
+              </Link>
             </div>
           </div>
         </div>

@@ -84,7 +84,6 @@ export default function LoginPage() {
       </div>
 
       <div className="auth-visual-side">
-        <div className="auth-visual-glow" style={{ background: 'radial-gradient(circle at 30% 20%, rgba(37,99,214,0.25), transparent 60%)' }} />
         <div className="auth-visual-content">
           <p className="eyebrow auth-visual-eyebrow">Simulation Mode</p>
           <h2 className="auth-visual-title">

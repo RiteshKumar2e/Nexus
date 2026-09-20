@@ -2,7 +2,7 @@
   position: relative;
   min-height: 100vh;
   display: flex;
-  background: #ffffff;
+  background: var(--bg-page);
 }
 
 .auth-form-side {
@@ -102,10 +102,6 @@
   position: relative;
   overflow: hidden;
 }
-.auth-visual-glow {
-  position: absolute;
-  inset: 0;
-}
 .auth-visual-content {
   position: relative;
   height: 100%;
@@ -113,7 +109,7 @@
   flex-direction: column;
   justify-content: center;
   padding: 0 64px;
-  color: #ffffff;
+  color: var(--bg-surface);
   max-width: 512px;
 }
 .auth-visual-eyebrow {
@@ -121,8 +117,8 @@
   margin-bottom: 16px;
 }
 .auth-visual-title {
-  color: #ffffff;
-  font-size: 30px;
+  color: var(--bg-surface);
+  font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.25;

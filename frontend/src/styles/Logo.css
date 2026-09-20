@@ -7,6 +7,7 @@
 .logo-mark {
   border-radius: 7px;
   background: var(--brand-600);
+  color: var(--ink-900);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -3,7 +3,7 @@ import '../../styles/FeatureShowcase.css'
 
 export default function FeatureShowcase() {
   return (
-    <section className="features-section" id="capabilities">
+    <section className="features-section" id="features">
       <div className="container-page">
         <div className="features-intro">
           <p className="section-label">Capabilities</p>
@@ -23,13 +23,13 @@ export default function FeatureShowcase() {
               </div>
               <div className="feature-mini-map">
                 <svg viewBox="0 0 500 200" style={{ width: '100%', height: '100%' }}>
-                  <rect width="500" height="200" fill="#F5F7F8" />
-                  <path d="M30 160 L180 100 L280 120 L470 40" stroke="#C7CED4" strokeWidth="4" fill="none" />
-                  <circle cx="180" cy="100" r="7" fill="#DC3D3D" />
-                  <circle cx="280" cy="120" r="6" fill="#E4A11A" />
-                  <circle cx="30" cy="160" r="6" fill="#2563D6" />
-                  <circle cx="470" cy="40" r="6" fill="#7B5CC7" />
-                  <circle cx="380" cy="150" r="6" fill="#2FA96B" />
+                  <rect width="500" height="200" fill="#F1EBD8" />
+                  <path d="M30 160 L180 100 L280 120 L470 40" stroke="#C9C2AF" strokeWidth="4" fill="none" />
+                  <circle cx="180" cy="100" r="7" fill="#A83A3A" />
+                  <circle cx="280" cy="120" r="6" fill="#C97A2E" />
+                  <circle cx="30" cy="160" r="6" fill="#C89B3C" />
+                  <circle cx="470" cy="40" r="6" fill="#4F7EA8" />
+                  <circle cx="380" cy="150" r="6" fill="#4B7A52" />
                 </svg>
               </div>
             </div>

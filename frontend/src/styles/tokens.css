@@ -1,53 +1,69 @@
-/* Design tokens — mirrors the previous Tailwind theme so the visual system stays identical. */
+/* Design tokens — warm paper/engineering palette. Every color in the app should
+   trace back to one of these variables; avoid introducing new literals elsewhere. */
 :root {
-  --ink-900: #0f1419;
-  --ink-800: #1a2027;
-  --ink-700: #2b333c;
-  --ink-600: #424c56;
-  --ink-500: #5b6673;
-  --ink-400: #78838f;
-  --ink-300: #9ca6b0;
-  --ink-200: #c7ced4;
-  --ink-100: #e7ebee;
-  --ink-50: #f5f7f8;
+  /* ---- Background ---- */
+  --bg-page: #f7f3e8;      /* primary page background */
+  --bg-page-alt: #fcfaf3;  /* secondary background */
+  --bg-surface: #fffdf7;   /* card / surface */
+  --bg-subtle: #f1ebd8;    /* subtle section background */
 
-  --brand-900: #0b2c6b;
-  --brand-800: #123a85;
-  --brand-700: #1848a0;
-  --brand-600: #1e56bd;
-  --brand-500: #2563d6;
-  --brand-400: #4e82e4;
-  --brand-300: #84a9ec;
-  --brand-200: #b7cbf3;
-  --brand-100: #dce6fa;
-  --brand-50: #eff4fd;
+  /* ---- Neutral text / border scale (900 = darkest) ---- */
+  --ink-900: #20231f;  /* main text */
+  --ink-800: #2b2e27;
+  --ink-700: #383b32;
+  --ink-600: #4a4d42;
+  --ink-500: #5f625b;  /* secondary text */
+  --ink-400: #85877f;  /* muted text */
+  --ink-300: #a3a59a;
+  --ink-200: #c9c2af;  /* strong border */
+  --ink-100: #ddd8c8;  /* border */
+  --ink-50: #f1ebd8;   /* subtle background (alias of --bg-subtle) */
 
-  --success-700: #146c43;
-  --success-600: #198754;
-  --success-500: #2fa96b;
-  --success-100: #dcf3e5;
+  /* ---- Accent: muted warm ochre ---- */
+  --brand-900: #4a3710;
+  --brand-800: #5c4415;
+  --brand-700: #7a5c1c;  /* text-safe accent, on light/surface backgrounds */
+  --brand-600: #c89b3c;  /* primary accent surface */
+  --brand-600-hover: #b98b2e;
+  --brand-500: #d2ac57;
+  --brand-400: #ddbe74;
+  --brand-300: #e8d7a8;  /* light accent */
+  --brand-200: #efe1be;
+  --brand-100: #f4e9c9;  /* subtle accent background */
+  --brand-50: #faf3e0;   /* lightest accent background */
 
-  --warning-700: #b5760a;
-  --warning-600: #d08a0f;
-  --warning-500: #e4a11a;
-  --warning-100: #fcedcb;
+  /* ---- Status: muted, functional ---- */
+  --success-700: #3f6b44;
+  --success-600: #4b7a52;
+  --success-500: #5c8f63;
+  --success-100: #e1ead9;
 
-  --critical-700: #a82a2a;
-  --critical-600: #c43333;
-  --critical-500: #dc3d3d;
-  --critical-100: #fbdede;
+  --warning-700: #8a4a12;
+  --warning-600: #a85f17;
+  --warning-500: #c97a2e;
+  --warning-100: #f2dcc0;
+
+  --critical-700: #8a2e2e;
+  --critical-600: #a83a3a;
+  --critical-500: #c24e4e;
+  --critical-100: #f2d9d3;
+
+  --info-700: #2e5478;
+  --info-600: #3d6690;
+  --info-500: #4f7ea8;
+  --info-100: #d9e3ec;
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --radius-sm: 8px;
-  --radius: 10px;
-  --radius-md: 12px;
-  --radius-lg: 14px;
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
 
-  --shadow-subtle: 0 1px 2px rgba(15, 20, 25, 0.04), 0 1px 1px rgba(15, 20, 25, 0.03);
-  --shadow-card: 0 1px 3px rgba(15, 20, 25, 0.06), 0 4px 12px rgba(15, 20, 25, 0.04);
-  --shadow-popover: 0 8px 24px rgba(15, 20, 25, 0.12);
+  --shadow-subtle: 0 1px 2px rgba(32, 35, 31, 0.05);
+  --shadow-card: 0 1px 2px rgba(32, 35, 31, 0.05), 0 3px 8px rgba(32, 35, 31, 0.05);
+  --shadow-popover: 0 6px 20px rgba(32, 35, 31, 0.14);
 
   --space-1: 4px;
   --space-2: 8px;

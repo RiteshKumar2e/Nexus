@@ -1,7 +1,7 @@
 .human-section {
   padding: 80px 0;
   background: var(--ink-900);
-  color: #ffffff;
+  color: var(--bg-surface);
 }
 
 .human-grid {
@@ -27,7 +27,7 @@
 }
 
 .human-text h2 {
-  color: #ffffff;
+  color: var(--bg-surface);
   font-size: 24px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -41,7 +41,7 @@
 }
 
 .human-card {
-  background: #ffffff;
+  background: var(--bg-surface);
   color: var(--ink-900);
   padding: 24px;
   max-width: 420px;

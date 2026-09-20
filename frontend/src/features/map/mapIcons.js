@@ -1,12 +1,12 @@
 import L from 'leaflet'
 
 const COLORS = {
-  critical: '#DC3D3D',
-  high: '#E4A11A',
-  team: '#2563D6',
-  hospital: '#7B5CC7',
-  shelter: '#2FA96B',
-  base: '#1A2027',
+  critical: '#A83A3A',
+  high: '#C97A2E',
+  team: '#C89B3C',
+  hospital: '#4F7EA8',
+  shelter: '#4B7A52',
+  base: '#20231F',
 }
 
 export function makeDivIcon(kind, { pulse = false } = {}) {
@@ -29,8 +29,8 @@ export function makeDivIcon(kind, { pulse = false } = {}) {
 }
 
 export const ROAD_COLORS = {
-  OPEN: '#9CA6B0',
-  CONGESTED: '#E4A11A',
-  BLOCKED: '#5B6673',
-  DANGEROUS: '#DC3D3D',
+  OPEN: '#A3A59A',
+  CONGESTED: '#C97A2E',
+  BLOCKED: '#5F625B',
+  DANGEROUS: '#A83A3A',
 }

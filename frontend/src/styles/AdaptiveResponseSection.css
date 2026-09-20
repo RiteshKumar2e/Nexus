@@ -1,7 +1,7 @@
 .adaptive-section {
   padding: 80px 0;
   border-top: 1px solid var(--ink-100);
-  background: linear-gradient(to bottom, #ffffff, rgba(239, 244, 253, 0.4));
+  background: var(--bg-page);
 }
 
 .adaptive-intro {

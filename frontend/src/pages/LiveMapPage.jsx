@@ -10,7 +10,7 @@ const LEGEND = [
   { color: 'var(--critical-500)', label: 'Critical incident' },
   { color: 'var(--warning-500)', label: 'High-risk incident' },
   { color: 'var(--brand-500)', label: 'Response team' },
-  { color: '#7B5CC7', label: 'Hospital' },
+  { color: 'var(--info-500)', label: 'Hospital' },
   { color: 'var(--success-500)', label: 'Shelter' },
   { color: 'var(--ink-400)', label: 'Blocked road' },
 ]

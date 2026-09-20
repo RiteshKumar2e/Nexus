@@ -118,7 +118,6 @@ export default function RegisterPage() {
       </div>
 
       <div className="auth-visual-side">
-        <div className="auth-visual-glow" style={{ background: 'radial-gradient(circle at 70% 30%, rgba(37,99,214,0.25), transparent 60%)' }} />
         <div className="auth-visual-content">
           <p className="eyebrow auth-visual-eyebrow">Adaptive Intelligence</p>
           <h2 className="auth-visual-title">

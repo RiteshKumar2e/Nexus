@@ -17,7 +17,7 @@ const POINTS = [
 
 export default function TrustStatement() {
   return (
-    <section className="trust-section" id="product">
+    <section className="trust-section" id="about">
       <div className="container-page trust-layout">
         <h2 className="trust-heading">
           Built for situations where static plans stop working.
