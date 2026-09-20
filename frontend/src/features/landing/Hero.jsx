@@ -43,9 +43,6 @@ export default function Hero() {
           <Link to="/register" className="btn btn-primary">
             Launch Command Center <ArrowRight style={{ width: 16, height: 16 }} />
           </Link>
-          <a href="#capabilities" className="btn btn-secondary">
-            Explore the Platform
-          </a>
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}

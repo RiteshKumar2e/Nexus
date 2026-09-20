@@ -1,22 +1,24 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import '../styles/MarketingHeader.css'
 
 const NAV = [
-  { label: 'Home', to: '/' },
-  { label: 'About', href: '#about' },
-  { label: 'Features', href: '#features' },
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', sectionId: null },
+  { label: 'About', sectionId: 'about' },
+  { label: 'Features', sectionId: 'features' },
+  { label: 'How it works', sectionId: 'how-it-works' },
+  { label: 'Contact', sectionId: 'contact' },
 ]
 
 export default function MarketingHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const { user } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -24,23 +26,35 @@ export default function MarketingHeader() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  function goToSection(sectionId) {
+    setOpen(false)
+    if (location.pathname !== '/') {
+      navigate('/')
+      window.setTimeout(() => scrollToSection(sectionId), 50)
+      return
+    }
+    scrollToSection(sectionId)
+  }
+
+  function scrollToSection(sectionId) {
+    if (!sectionId) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
       <div className="container-page site-header-row">
         <Logo />
 
         <nav className="site-nav">
-          {NAV.map((item) =>
-            item.to ? (
-              <Link key={item.label} to={item.to} className="site-nav-link">
-                {item.label}
-              </Link>
-            ) : (
-              <a key={item.label} href={item.href} className="site-nav-link">
-                {item.label}
-              </a>
-            )
-          )}
+          {NAV.map((item) => (
+            <button key={item.label} type="button" onClick={() => goToSection(item.sectionId)} className="site-nav-link">
+              {item.label}
+            </button>
+          ))}
         </nav>
 
         <div className="site-header-actions">
@@ -57,17 +71,11 @@ export default function MarketingHeader() {
       {open && (
         <div className="site-mobile-menu">
           <div className="site-mobile-menu-inner">
-            {NAV.map((item) =>
-              item.to ? (
-                <Link key={item.label} to={item.to} onClick={() => setOpen(false)} className="site-mobile-link">
-                  {item.label}
-                </Link>
-              ) : (
-                <a key={item.label} href={item.href} onClick={() => setOpen(false)} className="site-mobile-link">
-                  {item.label}
-                </a>
-              )
-            )}
+            {NAV.map((item) => (
+              <button key={item.label} type="button" onClick={() => goToSection(item.sectionId)} className="site-mobile-link">
+                {item.label}
+              </button>
+            ))}
             <div className="site-mobile-actions">
               <Link to={user ? '/command-center' : '/login'} className="btn btn-primary">
                 {user ? 'Command Center' : 'Sign in'}
