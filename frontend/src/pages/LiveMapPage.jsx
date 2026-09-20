@@ -1,5 +1,6 @@
 import { Map as MapIcon } from 'lucide-react'
 import { useLiveOperationalData } from '../hooks/useLiveOperationalData.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import DisasterMap from '../features/map/DisasterMap.jsx'
 import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
@@ -15,6 +16,7 @@ const LEGEND = [
 ]
 
 export default function LiveMapPage() {
+  useDocumentTitle('Live Map')
   const { incidents, teams, hospitals, shelters, roads, loading, error, reload } = useLiveOperationalData()
 
   return (

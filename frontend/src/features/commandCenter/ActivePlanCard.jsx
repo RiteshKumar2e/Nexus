@@ -3,6 +3,7 @@ import { ClipboardList, ArrowRight, Check, X } from 'lucide-react'
 import { getPlans, approvePlan, rejectPlan } from '../../services/plans.js'
 import { useSocket } from '../../context/SocketContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useToast } from '../../context/ToastContext.jsx'
 import StatusBadge from '../../components/StatusBadge.jsx'
 import LoadingState from '../../components/LoadingState.jsx'
 import EmptyState from '../../components/EmptyState.jsx'
@@ -12,6 +13,7 @@ import '../../styles/ActivePlanCard.css'
 export default function ActivePlanCard() {
   const { socket } = useSocket()
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [plan, setPlan] = useState(null)
   const [loading, setLoading] = useState(true)
   const [acting, setActing] = useState(false)
@@ -44,7 +46,10 @@ export default function ActivePlanCard() {
     setActing(true)
     try {
       await approvePlan(plan._id)
+      showToast(`Plan #${plan.planNumber} approved.`, 'success')
       await load()
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to approve plan.', 'error')
     } finally {
       setActing(false)
     }
@@ -55,7 +60,10 @@ export default function ActivePlanCard() {
     setActing(true)
     try {
       await rejectPlan(plan._id, 'Rejected by operator from Command Center')
+      showToast(`Plan #${plan.planNumber} rejected.`, 'info')
       await load()
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to reject plan.', 'error')
     } finally {
       setActing(false)
     }

@@ -219,7 +219,7 @@
   align-items: center;
   gap: 6px;
   font-weight: 600;
-  color: var(--warning-600);
+  color: var(--success-700);
 }
 .dash-topbar-extra {
   display: none;

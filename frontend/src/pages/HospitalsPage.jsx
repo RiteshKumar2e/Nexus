@@ -6,11 +6,13 @@ import StatusBadge from '../components/StatusBadge.jsx'
 import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
 import { getZoneName } from '../data/zones.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/ResourceStatCards.css'
 
 const BAR_TONE = { NORMAL: 'progress-fill-success', WARNING: 'progress-fill-warning', CRITICAL: 'progress-fill-critical' }
 
 export default function HospitalsPage() {
+  useDocumentTitle('Hospitals')
   const { socket } = useSocket()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)

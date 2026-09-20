@@ -7,11 +7,13 @@ import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
 import { getZoneName } from '../data/zones.js'
 import { pct } from '../utils/format.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/ResourceStatCards.css'
 
 const BAR_TONE = { AVAILABLE: 'progress-fill-success', NEAR_CAPACITY: 'progress-fill-warning', FULL: 'progress-fill-critical' }
 
 export default function SheltersPage() {
+  useDocumentTitle('Shelters')
   const { socket } = useSocket()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)

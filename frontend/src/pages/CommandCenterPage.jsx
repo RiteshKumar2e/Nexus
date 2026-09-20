@@ -4,6 +4,7 @@ import { Siren, TriangleAlert, Users, Building2, Home, Package, Maximize2 } from
 import { getDashboardSummary } from '../services/dashboard.js'
 import { useSocket } from '../context/SocketContext.jsx'
 import { useLiveOperationalData } from '../hooks/useLiveOperationalData.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import MetricCard from '../features/commandCenter/MetricCard.jsx'
 import EventStream from '../features/commandCenter/EventStream.jsx'
 import ActivePlanCard from '../features/commandCenter/ActivePlanCard.jsx'
@@ -14,6 +15,7 @@ import ErrorState from '../components/ErrorState.jsx'
 import '../styles/CommandCenterPage.css'
 
 export default function CommandCenterPage() {
+  useDocumentTitle('Command Center')
   const { socket } = useSocket()
   const [summary, setSummary] = useState(null)
   const [loading, setLoading] = useState(true)

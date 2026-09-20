@@ -19,9 +19,41 @@
   line-height: 1.6;
 }
 
-.timeline-scroll {
+.timeline-scroll-wrap {
+  position: relative;
   margin-top: 56px;
+}
+.timeline-scroll-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 32px;
+  background: linear-gradient(to right, transparent, var(--ink-50));
+  pointer-events: none;
+}
+@media (min-width: 1024px) {
+  .timeline-scroll-wrap::after {
+    display: none;
+  }
+}
+
+.timeline-scroll {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-right: 24px;
+  padding-bottom: 4px;
+}
+
+.timeline-hint {
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--ink-400);
+  text-align: right;
+}
+@media (min-width: 1024px) {
+  .timeline-hint { display: none; }
 }
 
 .timeline-track {

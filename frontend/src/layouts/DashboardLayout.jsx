@@ -20,6 +20,7 @@ import {
 import Logo from '../components/Logo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useSocket } from '../context/SocketContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import '../styles/DashboardLayout.css'
 
 const NAV = [
@@ -39,10 +40,12 @@ const NAV = [
 function SidebarContent({ onNavigate }) {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const { showToast } = useToast()
 
   function handleLogout() {
     logout()
     navigate('/')
+    showToast('Signed out.', 'info')
     onNavigate?.()
   }
 
@@ -120,7 +123,7 @@ export default function DashboardLayout() {
               <p className="dash-topbar-title">NEXUS COMMAND CENTER</p>
               <div className="dash-topbar-status">
                 <span className="dash-status-live">
-                  <span className="status-dot animate-pulse-dot" style={{ background: 'var(--warning-500)' }} /> SIMULATION ACTIVE
+                  <span className="status-dot animate-pulse-dot" style={{ background: 'var(--success-500)' }} /> SIMULATION ACTIVE
                 </span>
                 <span className="dash-topbar-extra">&middot; Patna, Bihar</span>
                 <span className="dash-topbar-connection">

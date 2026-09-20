@@ -22,8 +22,10 @@ import {
   triggerEvent,
 } from '../services/simulation.js'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import EventStream from '../features/commandCenter/EventStream.jsx'
 import LoadingState from '../components/LoadingState.jsx'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/SimulationPage.css'
 
 const EVENTS = [
@@ -39,7 +41,9 @@ const EVENTS = [
 const STATUS_BADGE = { RUNNING: 'badge-success', PAUSED: 'badge-warning', IDLE: 'badge-neutral' }
 
 export default function SimulationPage() {
+  useDocumentTitle('Simulation')
   const { user } = useAuth()
+  const { showToast } = useToast()
   const [state, setState] = useState(null)
   const [loading, setLoading] = useState(true)
   const [firing, setFiring] = useState(null)
@@ -58,9 +62,14 @@ export default function SimulationPage() {
 
   useEffect(() => { load() }, [load])
 
-  async function handleControl(fn) {
-    const { state } = await fn()
-    setState(state)
+  async function handleControl(fn, label) {
+    try {
+      const { state } = await fn()
+      setState(state)
+      showToast(label, 'success')
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Action failed.', 'error')
+    }
   }
 
   async function handleEvent(type) {
@@ -69,8 +78,11 @@ export default function SimulationPage() {
     try {
       const { result } = await triggerEvent(type)
       setLastResult({ type, result })
+      showToast(`${EVENTS.find((e) => e.type === type)?.label} triggered.`, 'success')
     } catch (err) {
-      setLastResult({ type, error: err.response?.data?.message || 'Event failed.' })
+      const message = err.response?.data?.message || 'Event failed.'
+      setLastResult({ type, error: message })
+      showToast(message, 'error')
     } finally {
       setFiring(null)
     }
@@ -100,10 +112,10 @@ export default function SimulationPage() {
 
       {canAct && (
         <div className="card sim-controls">
-          <button onClick={() => handleControl(startSimulation)} className="btn btn-primary"><Play style={{ width: 16, height: 16 }} /> Start</button>
-          <button onClick={() => handleControl(pauseSimulation)} className="btn btn-secondary"><Pause style={{ width: 16, height: 16 }} /> Pause</button>
-          <button onClick={() => handleControl(resumeSimulation)} className="btn btn-secondary"><Play style={{ width: 16, height: 16 }} /> Resume</button>
-          <button onClick={() => handleControl(resetSimulation)} className="btn btn-secondary btn-text-critical"><RotateCcw style={{ width: 16, height: 16 }} /> Reset</button>
+          <button onClick={() => handleControl(startSimulation, 'Simulation started.')} className="btn btn-primary"><Play style={{ width: 16, height: 16 }} /> Start</button>
+          <button onClick={() => handleControl(pauseSimulation, 'Simulation paused.')} className="btn btn-secondary"><Pause style={{ width: 16, height: 16 }} /> Pause</button>
+          <button onClick={() => handleControl(resumeSimulation, 'Simulation resumed.')} className="btn btn-secondary"><Play style={{ width: 16, height: 16 }} /> Resume</button>
+          <button onClick={() => handleControl(resetSimulation, 'Simulation reset to initial state.')} className="btn btn-secondary btn-text-critical"><RotateCcw style={{ width: 16, height: 16 }} /> Reset</button>
         </div>
       )}
 

@@ -9,6 +9,7 @@ import ErrorState from '../components/ErrorState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 import { timeAgo } from '../utils/format.js'
 import { getZoneName } from '../data/zones.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/IncidentsPage.css'
 
 const SEVERITIES = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL']
@@ -16,6 +17,7 @@ const STATUSES = ['ACTIVE', 'MONITORING', 'RESOLVED']
 const TYPES = ['FLOOD', 'BUILDING_COLLAPSE', 'FIRE', 'MEDICAL_EMERGENCY', 'ROAD_ACCIDENT', 'WATER_RESCUE', 'INFRASTRUCTURE']
 
 export default function IncidentsPage() {
+  useDocumentTitle('Incidents')
   const { socket } = useSocket()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)

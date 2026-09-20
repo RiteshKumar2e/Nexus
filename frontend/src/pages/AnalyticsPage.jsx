@@ -4,11 +4,13 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { useLiveOperationalData } from '../hooks/useLiveOperationalData.js'
 import { getResources } from '../services/resources.js'
 import LoadingState from '../components/LoadingState.jsx'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AnalyticsPage.css'
 
 const SEVERITY_COLORS = { LOW: '#2FA96B', MEDIUM: '#E4A11A', HIGH: '#DC3D3D', CRITICAL: '#A82A2A' }
 
 export default function AnalyticsPage() {
+  useDocumentTitle('Analytics')
   const { incidents, hospitals, shelters, loading } = useLiveOperationalData()
   const [resources, setResources] = useState([])
 

@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { SocketProvider } from './context/SocketContext.jsx'
+import { ToastProvider } from './context/ToastContext.jsx'
 import 'leaflet/dist/leaflet.css'
 import './index.css'
 
@@ -12,7 +13,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <SocketProvider>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </SocketProvider>
       </AuthProvider>
     </BrowserRouter>

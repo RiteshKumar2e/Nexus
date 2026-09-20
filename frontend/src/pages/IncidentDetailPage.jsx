@@ -10,11 +10,15 @@ import ErrorState from '../components/ErrorState.jsx'
 import DisasterMap from '../features/map/DisasterMap.jsx'
 import { getZoneName } from '../data/zones.js'
 import { timeAgo, formatTime } from '../utils/format.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
+import { useToast } from '../context/ToastContext.jsx'
 import '../styles/IncidentDetailPage.css'
 
 export default function IncidentDetailPage() {
   const { id } = useParams()
   const [incident, setIncident] = useState(null)
+  useDocumentTitle(incident ? `Incident ${incident.incidentId}` : 'Incident')
+  const { showToast } = useToast()
   const [decisions, setDecisions] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -49,9 +53,10 @@ export default function IncidentDetailPage() {
       formData.append('image', file)
       formData.append('incidentId', id)
       await analyzeEvidence(formData)
+      showToast('Evidence uploaded and analyzed.', 'success')
       await load()
     } catch (err) {
-      alert(err.response?.data?.message || 'Upload failed.')
+      showToast(err.response?.data?.message || 'Upload failed.', 'error')
     } finally {
       setUploading(false)
       if (fileRef.current) fileRef.current.value = ''

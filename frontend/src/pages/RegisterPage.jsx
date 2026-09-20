@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
 import PasswordInput from '../components/PasswordInput.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AuthPages.css'
 
 const ROLES = [
@@ -13,6 +14,7 @@ const ROLES = [
 ]
 
 export default function RegisterPage() {
+  useDocumentTitle('Create Account')
   const { register } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'OPERATOR' })

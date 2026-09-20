@@ -7,9 +7,11 @@ import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 import { formatTime, timeAgo } from '../utils/format.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/DecisionLogPage.css'
 
 export default function DecisionLogPage() {
+  useDocumentTitle('Decision Log')
   const { socket } = useSocket()
   const [items, setItems] = useState([])
   const [search, setSearch] = useState('')

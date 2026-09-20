@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import Logo from '../components/Logo.jsx'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/NotFoundPage.css'
 
 export default function NotFoundPage() {
+  useDocumentTitle('Page Not Found')
   return (
     <div className="notfound-shell">
       <Logo />

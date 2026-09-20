@@ -23,18 +23,21 @@ export default function ProblemTimeline() {
           </p>
         </div>
 
-        <div className="timeline-scroll">
-          <div className="timeline-track">
-            {EVENTS.map((e, i) => (
-              <div key={e.time} className="timeline-node">
-                {i !== 0 && <div className="timeline-connector" />}
-                <div className={`timeline-dot timeline-dot-${e.tone}`} />
-                <p className="timeline-time">{e.time}</p>
-                <p className="timeline-label">{e.label}</p>
-              </div>
-            ))}
+        <div className="timeline-scroll-wrap">
+          <div className="timeline-scroll">
+            <div className="timeline-track">
+              {EVENTS.map((e, i) => (
+                <div key={e.time} className="timeline-node">
+                  {i !== 0 && <div className="timeline-connector" />}
+                  <div className={`timeline-dot timeline-dot-${e.tone}`} />
+                  <p className="timeline-time">{e.time}</p>
+                  <p className="timeline-label">{e.label}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+        <p className="timeline-hint">Swipe to see the full timeline &rarr;</p>
       </div>
     </section>
   )

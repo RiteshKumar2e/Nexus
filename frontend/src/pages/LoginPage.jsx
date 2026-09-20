@@ -4,9 +4,11 @@ import { ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
 import PasswordInput from '../components/PasswordInput.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AuthPages.css'
 
 export default function LoginPage() {
+  useDocumentTitle('Sign In')
   const { login } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()

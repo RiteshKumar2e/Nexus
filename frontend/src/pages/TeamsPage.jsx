@@ -7,11 +7,13 @@ import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
 import { getZoneName } from '../data/zones.js'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/TeamsPage.css'
 
 const FILTERS = ['ALL', 'AVAILABLE', 'BUSY', 'EN_ROUTE', 'UNAVAILABLE']
 
 export default function TeamsPage() {
+  useDocumentTitle('Response Teams')
   const { socket } = useSocket()
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)

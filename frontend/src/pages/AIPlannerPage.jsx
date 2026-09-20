@@ -4,15 +4,19 @@ import { getPlans, approvePlan, rejectPlan } from '../services/plans.js'
 import { queryCopilot } from '../services/ai.js'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useSocket } from '../context/SocketContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
 import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
 import EmptyState from '../components/EmptyState.jsx'
+import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AIPlannerPage.css'
 
 export default function AIPlannerPage() {
+  useDocumentTitle('AI Planner')
   const { user } = useAuth()
   const { socket } = useSocket()
+  const { showToast } = useToast()
   const [plans, setPlans] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -60,12 +64,28 @@ export default function AIPlannerPage() {
   async function handleApprove() {
     if (!current) return
     setActing(true)
-    try { await approvePlan(current._id); await load() } finally { setActing(false) }
+    try {
+      await approvePlan(current._id)
+      showToast(`Plan #${current.planNumber} approved.`, 'success')
+      await load()
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to approve plan.', 'error')
+    } finally {
+      setActing(false)
+    }
   }
   async function handleReject() {
     if (!current) return
     setActing(true)
-    try { await rejectPlan(current._id, 'Rejected from AI Planner'); await load() } finally { setActing(false) }
+    try {
+      await rejectPlan(current._id, 'Rejected from AI Planner')
+      showToast(`Plan #${current.planNumber} rejected.`, 'info')
+      await load()
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to reject plan.', 'error')
+    } finally {
+      setActing(false)
+    }
   }
 
   if (loading) return <LoadingState label="Loading AI planner..." />
