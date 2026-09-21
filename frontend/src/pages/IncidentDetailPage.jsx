@@ -78,7 +78,7 @@ export default function IncidentDetailPage() {
           <div>
             <p className="detail-id">{incident.incidentId}</p>
             <h1 className="detail-heading">{incident.type.replace(/_/g, ' ')}</h1>
-            <p className="detail-zone">{getZoneName(incident.zone)}</p>
+            <p className="detail-zone">{getZoneName(incident.district)}</p>
           </div>
           <div className="detail-badges">
             <StatusBadge status={incident.severity} />
@@ -90,8 +90,9 @@ export default function IncidentDetailPage() {
 
       <div className="detail-stat-grid">
         <div className="card detail-stat-card">
-          <p className="section-label" style={{ marginBottom: 4 }}>Affected Population</p>
-          <p className="detail-stat-value">{incident.affectedPopulation?.toLocaleString('en-IN')}</p>
+          <p className="section-label" style={{ marginBottom: 4 }}>Population Impact</p>
+          <p className="detail-stat-value" style={{ fontSize: 20 }}>{incident.populationImpact}</p>
+          <p style={{ fontSize: 11, color: 'var(--ink-400)', marginTop: 2 }}>Qualitative estimate — Response Simulation</p>
         </div>
         <div className="card detail-stat-card">
           <p className="section-label" style={{ marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}><Users style={{ width: 14, height: 14 }} /> Assigned Team</p>
@@ -106,7 +107,7 @@ export default function IncidentDetailPage() {
       </div>
 
       <div className="card detail-map-card">
-        <DisasterMap incidents={[incident]} teams={incident.assignedTeam ? [incident.assignedTeam] : []} hospitals={[]} shelters={[]} roads={[]} />
+        <DisasterMap incidents={[incident]} teams={incident.assignedTeam ? [incident.assignedTeam] : []} roads={[]} />
       </div>
 
       <div className="card detail-section-card">

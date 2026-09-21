@@ -71,9 +71,9 @@ export default function TeamsPage() {
                 <p className="entity-card-title">{team.name}</p>
                 <StatusBadge status={team.status} />
               </div>
-              <p className="team-card-type">{team.type}</p>
+              <p className="team-card-type">{team.type}{team.agency ? ` · ${team.agency.replace(/_/g, ' ')}` : ''}</p>
               <div className="team-card-meta">
-                <p className="team-card-meta-row"><MapPin /> {getZoneName(team.currentAssignment?.zone || team.location)}</p>
+                <p className="team-card-meta-row"><MapPin /> {getZoneName(team.currentAssignment?.district || team.location)}</p>
                 {team.currentAssignment?.eta != null && <p className="team-card-eta">ETA: {team.currentAssignment.eta} min</p>}
                 <p className="team-card-meta-row team-card-resources">
                   <Package />

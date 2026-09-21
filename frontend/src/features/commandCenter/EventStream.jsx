@@ -13,8 +13,8 @@ const TONE = {
   'plan:approved': 'success',
   'plan:rejected': 'critical',
   'team:updated': 'brand',
-  'hospital:updated': 'warning',
-  'shelter:updated': 'warning',
+  'medicalUnit:updated': 'warning',
+  'reliefCamp:updated': 'warning',
   'incident:created': 'critical',
   'decision:created': 'neutral',
   'alert:created': 'warning',
@@ -39,10 +39,10 @@ function labelFor(event, payload) {
       return `PLAN #${payload.planNumber} REJECTED`
     case 'team:updated':
       return `${payload.team?.name?.toUpperCase()} — ${payload.team?.status}`
-    case 'hospital:updated':
-      return `${payload.hospital?.name?.toUpperCase()} — ${payload.hospital?.status}`
-    case 'shelter:updated':
-      return `${payload.shelter?.name?.toUpperCase()} — ${payload.shelter?.status}`
+    case 'medicalUnit:updated':
+      return `${payload.medicalUnit?.name?.toUpperCase()} — ${payload.medicalUnit?.status}`
+    case 'reliefCamp:updated':
+      return `${payload.reliefCamp?.name?.toUpperCase()} — ${payload.reliefCamp?.capacityStatus}`
     case 'incident:created':
       return `NEW INCIDENT — ${payload.incident?.incidentId}`
     case 'decision:created':
@@ -69,8 +69,8 @@ export default function EventStream({ maxItems = 40 }) {
       'plan:approved',
       'plan:rejected',
       'team:updated',
-      'hospital:updated',
-      'shelter:updated',
+      'medicalUnit:updated',
+      'reliefCamp:updated',
       'incident:created',
       'decision:created',
       'alert:created',

@@ -4,7 +4,7 @@ const EVENTS = [
   { time: '09:40', label: 'Road Open', tone: 'neutral' },
   { time: '09:45', label: 'Flood Rising', tone: 'warning' },
   { time: '09:49', label: 'Road Blocked', tone: 'critical' },
-  { time: '09:51', label: 'Hospital Overloaded', tone: 'critical' },
+  { time: '09:51', label: 'Medical Unit Critical', tone: 'critical' },
   { time: '09:53', label: 'Plan Invalid', tone: 'critical' },
   { time: '09:54', label: 'New Plan Activated', tone: 'success' },
 ]
@@ -17,7 +17,7 @@ export default function ProblemTimeline() {
           <p className="section-label">The problem</p>
           <h2>Disaster response is a moving target.</h2>
           <p>
-            A road can become blocked. A hospital can reach capacity. A shelter can become full.
+            A road can become blocked. A medical unit can reach critical capacity. A relief camp can fill up.
             A rescue team can become unavailable. A fixed response plan can quickly become
             outdated — often before it's even fully executed.
           </p>

@@ -4,15 +4,15 @@ import { queryCopilot } from '../../services/ai.js'
 import '../../styles/CopilotPanel.css'
 
 const SUGGESTIONS = [
-  'Which area is most critical?',
-  'Why was Team Alpha reassigned?',
-  'Which hospital can accept patients?',
+  'Which district is most critical?',
+  'Why was SDRF Team 1 reassigned?',
+  'Which medical unit can accept patients?',
   'What changed in the last 10 minutes?',
 ]
 
 export default function CopilotPanel() {
   const [messages, setMessages] = useState([
-    { role: 'assistant', text: "Ask me about live incidents, teams, hospitals, shelters, or the active response plan.", source: 'system' },
+    { role: 'assistant', text: "Ask me about live incidents, teams, medical units, relief camps, or the active response plan.", source: 'system' },
   ])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)

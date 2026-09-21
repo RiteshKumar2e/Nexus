@@ -5,11 +5,9 @@ import { useSocket } from '../context/SocketContext.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
 import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
-import { pct } from '../utils/format.js'
+import { getZoneName } from '../data/zones.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/ResourceStatCards.css'
-
-const BAR_TONE = { HEALTHY: 'progress-fill-success', LOW: 'progress-fill-warning', CRITICAL: 'progress-fill-critical' }
 
 export default function ResourcesPage() {
   useDocumentTitle('Resources')
@@ -47,25 +45,25 @@ export default function ResourcesPage() {
 
   return (
     <div className="page">
-      <h1 className="page-title"><Package /> Resources</h1>
+      <div className="page-header-row">
+        <div>
+          <h1 className="page-title"><Package /> Rescue Resources</h1>
+          <p className="page-subtext">Operational Simulation &middot; status reflects the response simulation, not live inventory feeds.</p>
+        </div>
+      </div>
 
       <div className="card-grid card-grid-2 card-grid-3">
         {items.map((r) => (
-          <div key={r._id} className="card entity-card">
+          <div key={r._id} className={`card entity-card ${r.status === 'CRITICAL_SHORTAGE' ? 'card-ring-critical' : ''}`}>
             <div className="entity-card-header">
               <p className="entity-card-title">{r.name}</p>
               <StatusBadge status={r.status} />
             </div>
-            <p className="stat-card-category">{r.category.replace(/_/g, ' ')}</p>
-            <div className="progress-track stat-card-progress">
-              <div className={`progress-fill ${BAR_TONE[r.status]}`} style={{ width: `${pct(r.available, r.total)}%` }} />
-            </div>
-            <div className="stat-card-quad">
-              <div><p className="stat-card-quad-value">{r.available}</p><p className="stat-card-quad-label">Available</p></div>
-              <div><p className="stat-card-quad-value">{r.allocated}</p><p className="stat-card-quad-label">Allocated</p></div>
-              <div><p className="stat-card-quad-value">{r.consumed}</p><p className="stat-card-quad-label">Consumed</p></div>
-              <div><p className="stat-card-quad-value">{r.total}</p><p className="stat-card-quad-label">Total</p></div>
-            </div>
+            <p className="stat-card-category">{r.category.replace(/_/g, ' ')} &middot; {r.region ? getZoneName(r.region) : 'State reserve'}</p>
+            {r.purpose && <p className="stat-card-pct" style={{ marginTop: 6 }}>{r.purpose}</p>}
+            <p style={{ fontSize: 11, color: 'var(--ink-400)', marginTop: 10 }}>
+              {r.available.toLocaleString('en-IN')} / {r.total.toLocaleString('en-IN')} {r.unit} available &middot; simulated units
+            </p>
           </div>
         ))}
       </div>

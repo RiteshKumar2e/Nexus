@@ -85,12 +85,12 @@ export default function LoginPage() {
 
       <div className="auth-visual-side">
         <div className="auth-visual-content">
-          <p className="eyebrow auth-visual-eyebrow">Simulation Mode</p>
+          <p className="eyebrow auth-visual-eyebrow">Bihar Flood Response 2026</p>
           <h2 className="auth-visual-title">
             "When the situation changes, the response changes."
           </h2>
           <p className="auth-visual-text">
-            Adaptive intelligence for disaster response, built for authorized emergency operators.
+            Emergency coordination for flood-affected Bihar districts, built for authorized emergency operators.
           </p>
         </div>
       </div>

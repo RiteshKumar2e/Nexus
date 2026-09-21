@@ -1,4 +1,4 @@
-/* Shared by ResourcesPage, HospitalsPage, SheltersPage */
+/* Shared by ResourcesPage, MedicalUnitsPage, ReliefCampsPage, CommunityKitchensPage, DistrictsPage */
 .stat-card-category {
   font-size: 12px;
   color: var(--ink-400);

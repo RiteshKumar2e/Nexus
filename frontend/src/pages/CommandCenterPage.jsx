@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { Siren, TriangleAlert, Users, Building2, Home, Package, Maximize2 } from 'lucide-react'
+import { Siren, TriangleAlert, Users, Stethoscope, Home, Package, CookingPot, Bell, Maximize2 } from 'lucide-react'
 import { getDashboardSummary } from '../services/dashboard.js'
 import { useSocket } from '../context/SocketContext.jsx'
 import { useLiveOperationalData } from '../hooks/useLiveOperationalData.js'
+import { getCommunityKitchens } from '../services/communityKitchens.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import MetricCard from '../features/commandCenter/MetricCard.jsx'
 import EventStream from '../features/commandCenter/EventStream.jsx'
@@ -20,7 +21,8 @@ export default function CommandCenterPage() {
   const [summary, setSummary] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const { incidents, teams, hospitals, shelters, roads } = useLiveOperationalData()
+  const [communityKitchens, setCommunityKitchens] = useState([])
+  const { incidents, teams, medicalUnits, reliefCamps, roads } = useLiveOperationalData()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -36,12 +38,13 @@ export default function CommandCenterPage() {
 
   useEffect(() => {
     load()
+    getCommunityKitchens().then(({ items }) => setCommunityKitchens(items)).catch(() => {})
   }, [load])
 
   useEffect(() => {
     if (!socket) return
     const refresh = () => load()
-    const events = ['incident:created', 'incident:updated', 'team:updated', 'hospital:updated', 'shelter:updated', 'plan:activated', 'resource:updated']
+    const events = ['incident:created', 'incident:updated', 'team:updated', 'medicalUnit:updated', 'reliefCamp:updated', 'plan:activated', 'resource:updated']
     events.forEach((e) => socket.on(e, refresh))
     return () => events.forEach((e) => socket.off(e, refresh))
   }, [socket, load])
@@ -51,18 +54,34 @@ export default function CommandCenterPage() {
 
   return (
     <div className="page">
+      <div className="cc-banner">
+        <div>
+          <p className="cc-banner-eyebrow">BIHAR FLOOD RESPONSE</p>
+          <h1 className="cc-banner-title">Emergency coordination dashboard for flood-affected districts</h1>
+          <p className="cc-banner-sub">Response Simulation &middot; Last system update: 21 Sep 2026</p>
+        </div>
+      </div>
+
+      <p className="section-label" style={{ margin: '20px 0 10px' }}>Situation Overview</p>
       <div className="cc-metrics">
-        <MetricCard icon={Siren} label="Active Incidents" value={summary?.activeIncidents ?? '—'} />
-        <MetricCard icon={TriangleAlert} label="Critical" value={summary?.criticalIncidents ?? '—'} tone="critical" />
+        <MetricCard icon={TriangleAlert} label="Affected Districts" value={summary?.affectedDistricts ?? '—'} sub={`${summary?.criticalDistricts ?? 0} critical`} tone={summary?.criticalDistricts > 0 ? 'critical' : 'neutral'} />
+        <MetricCard icon={Siren} label="Active Incidents" value={summary?.activeIncidents ?? '—'} sub={`${summary?.criticalIncidents ?? 0} critical`} tone={summary?.criticalIncidents > 0 ? 'critical' : 'neutral'} />
         <MetricCard icon={Users} label="Teams Active" value={`${summary?.teamsActive ?? 0} / ${summary?.teamsTotal ?? 0}`} />
-        <MetricCard icon={Building2} label="Hospitals" value={`${summary?.hospitalsHealthy ?? 0} / ${summary?.hospitalsTotal ?? 0}`} />
-        <MetricCard icon={Home} label="Shelter Capacity" value={`${summary?.shelterCapacityPct ?? 0}%`} tone={summary?.shelterCapacityPct > 85 ? 'warning' : 'neutral'} />
+        <MetricCard icon={Home} label="Relief Camps" value={`${summary?.activeReliefCamps ?? 0} / ${summary?.reliefCampsTotal ?? 0} active`} sub={summary?.fullReliefCamps ? `${summary.fullReliefCamps} at full capacity` : undefined} tone={summary?.fullReliefCamps > 0 ? 'warning' : 'success'} />
+        <MetricCard
+          icon={Stethoscope}
+          label="Medical Support"
+          value={(summary?.medicalStatus || 'AVAILABLE').replace(/_/g, ' ')}
+          tone={summary?.medicalStatus === 'CRITICAL' ? 'critical' : summary?.medicalStatus === 'HIGH_DEMAND' ? 'warning' : 'success'}
+        />
+        <MetricCard icon={CookingPot} label="Community Kitchens" value={`${summary?.kitchensActive ?? 0} / ${summary?.kitchensTotal ?? 0} active`} />
         <MetricCard
           icon={Package}
-          label="Resources"
-          value={summary?.resourceStatus || 'HEALTHY'}
-          tone={summary?.resourceStatus === 'CRITICAL' ? 'critical' : summary?.resourceStatus === 'LOW' ? 'warning' : 'success'}
+          label="Rescue Resources"
+          value={(summary?.resourceStatus || 'AVAILABLE').replace(/_/g, ' ')}
+          tone={summary?.resourceStatus === 'CRITICAL_SHORTAGE' ? 'critical' : summary?.resourceStatus === 'MAINTENANCE' || summary?.resourceStatus === 'STANDBY' ? 'warning' : 'success'}
         />
+        <MetricCard icon={Bell} label="Critical Alerts" value={summary?.criticalAlerts ?? 0} tone={summary?.criticalAlerts > 0 ? 'critical' : 'neutral'} />
       </div>
 
       <div className="cc-main-grid">
@@ -74,7 +93,7 @@ export default function CommandCenterPage() {
             </Link>
           </div>
           <div className="cc-map-body">
-            <DisasterMap incidents={incidents} teams={teams} hospitals={hospitals} shelters={shelters} roads={roads} />
+            <DisasterMap incidents={incidents} teams={teams} medicalUnits={medicalUnits} reliefCamps={reliefCamps} communityKitchens={communityKitchens} roads={roads} />
           </div>
         </div>
         <EventStream />

@@ -8,7 +8,7 @@ const COLUMNS = [
   },
   {
     title: 'Platform',
-    links: ['Incidents', 'Response Teams', 'Resources', 'Hospitals & Shelters'],
+    links: ['Incidents', 'Districts', 'Response Teams', 'Resources', 'Medical & Relief Camps'],
   },
   {
     title: 'Simulation',
@@ -28,10 +28,10 @@ export default function MarketingFooter() {
           <div className="site-footer-brand">
             <Logo />
             <p className="site-footer-tagline">
-              Adaptive Intelligence for Disaster Response.
+              Adaptive Intelligence for Bihar Flood Response.
             </p>
             <p className="site-footer-mode">
-              Simulation Mode &middot; Decision-support only
+              Response Simulation &middot; Decision-support only
             </p>
           </div>
           {COLUMNS.map((col) => (
@@ -46,7 +46,7 @@ export default function MarketingFooter() {
           ))}
         </div>
         <div className="site-footer-bottom">
-          <p>&copy; {new Date().getFullYear()} NEXUS. All fictional data for demonstration purposes.</p>
+          <p>&copy; {new Date().getFullYear()} NEXUS. Publicly reported Bihar flood context is used for scenario framing; operational records shown are simulated for demonstration. See Data Sources.</p>
           <p>Built for responsible, human-controlled emergency decision support.</p>
         </div>
       </div>

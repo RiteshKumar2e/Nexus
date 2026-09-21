@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import {
   FlaskConical,
   Play,
@@ -29,13 +30,13 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/SimulationPage.css'
 
 const EVENTS = [
-  { type: 'FLOOD_RISING', label: 'Flood Rising', icon: Waves, description: 'Increases risk on roads connecting the most affected zone.' },
-  { type: 'ROAD_BLOCKED', label: 'Road Blocked', icon: TriangleAlert, description: 'Blocks Road R1 and triggers adaptive rerouting.' },
-  { type: 'HOSPITAL_OVERLOAD', label: 'Hospital Overloaded', icon: HeartPulse, description: 'Pushes Hospital H2 to critical capacity.' },
-  { type: 'SHELTER_FULL', label: 'Shelter Full', icon: Home, description: 'Fills Shelter S2 and redirects evacuation.' },
+  { type: 'FLOOD_RISING', label: 'Flood Rising', icon: Waves, description: 'Increases risk on roads connecting the most affected district.' },
+  { type: 'ROAD_BLOCKED', label: 'Road Blocked', icon: TriangleAlert, description: 'Blocks the primary Munger–Bhagalpur route and triggers adaptive rerouting.' },
+  { type: 'HOSPITAL_OVERLOAD', label: 'Medical Unit Critical', icon: HeartPulse, description: 'Pushes the Naugachia Medical Camp to critical status.' },
+  { type: 'SHELTER_FULL', label: 'Relief Camp Full', icon: Home, description: 'Fills the Bhagalpur Flood Relief Centre and redirects evacuation.' },
   { type: 'TEAM_UNAVAILABLE', label: 'Team Unavailable', icon: UserX, description: 'Marks an active team unavailable mid-response.' },
-  { type: 'NEW_INCIDENT', label: 'New Incident', icon: Siren, description: 'Reports a new incident and auto-dispatches a team.' },
-  { type: 'SUPPLY_SHORTAGE', label: 'Supply Shortage', icon: PackageMinus, description: 'Depletes a critical resource stockpile.' },
+  { type: 'NEW_INCIDENT', label: 'New Incident', icon: Siren, description: 'Reports a new incident in a Bihar district and auto-dispatches a team.' },
+  { type: 'SUPPLY_SHORTAGE', label: 'Supply Shortage', icon: PackageMinus, description: 'Marks a critical resource pool as a critical shortage.' },
 ]
 
 const STATUS_BADGE = { RUNNING: 'badge-success', PAUSED: 'badge-warning', IDLE: 'badge-neutral' }
@@ -95,7 +96,7 @@ export default function SimulationPage() {
       <div className="page-header-row">
         <div>
           <h1 className="page-title"><FlaskConical /> Disaster Simulation Control</h1>
-          <p className="sim-scenario">Scenario: {state?.scenario || 'PATNA FLOOD RESPONSE'}</p>
+          <p className="sim-scenario">Scenario: {state?.scenario || 'BIHAR FLOOD RESPONSE 2026'}</p>
         </div>
         <span className={`badge ${STATUS_BADGE[state?.status] || 'badge-neutral'}`}>
           {state?.status || 'IDLE'}
@@ -103,10 +104,11 @@ export default function SimulationPage() {
       </div>
 
       <div className="card sim-data-card">
-        <p className="sim-data-label">Simulation Data</p>
+        <p className="sim-data-label">Response Simulation</p>
         <p className="sim-data-text">
-          Population affected: <strong>{state?.populationAffected?.toLocaleString('en-IN')}</strong>
-          {' '}&middot; All data on this page is fictional and used for demonstration only.
+          Simulation status: <strong>{state?.status || 'IDLE'}</strong>
+          {' '}&middot; Operational figures on this page are simulated for demonstration. See{' '}
+          <Link to="/data-sources">Data Sources</Link> for what's verified vs. simulated.
         </p>
       </div>
 
@@ -169,8 +171,8 @@ function summarizeResult(result) {
   const { road, hospital, shelter, team, alternate, invalidatedPlans, results, incident, decision } = result
   return {
     ...(road && { road: { id: road.roadId, status: road.status } }),
-    ...(hospital && { hospital: { name: hospital.name, status: hospital.status } }),
-    ...(shelter && { shelter: { name: shelter.name, status: shelter.status } }),
+    ...(hospital && { medicalUnit: { name: hospital.name, status: hospital.status } }),
+    ...(shelter && { reliefCamp: { name: shelter.name, capacityStatus: shelter.capacityStatus } }),
     ...(team && { team: { name: team.name, status: team.status } }),
     ...(alternate && { alternate: alternate.name }),
     ...(incident && { incident: incident.incidentId }),

@@ -8,10 +8,18 @@ import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AnalyticsPage.css'
 
 const SEVERITY_COLORS = { LOW: '#4B7A52', MEDIUM: '#C97A2E', HIGH: '#A83A3A', CRITICAL: '#8A2E2E' }
+const MEDICAL_STATUS_COLORS = { AVAILABLE: '#4B7A52', LIMITED: '#C97A2E', HIGH_DEMAND: '#A83A3A', CRITICAL: '#8A2E2E' }
+const CAMP_STATUS_COLORS = { AVAILABLE: '#4B7A52', NEAR_CAPACITY: '#C97A2E', FULL: '#A83A3A' }
+
+function countBy(list, key, order) {
+  const counts = Object.fromEntries(order.map((k) => [k, 0]))
+  list.forEach((item) => { if (counts[item[key]] !== undefined) counts[item[key]] += 1 })
+  return order.map((name) => ({ name: name.replace(/_/g, ' '), key: name, value: counts[name] }))
+}
 
 export default function AnalyticsPage() {
   useDocumentTitle('Analytics')
-  const { incidents, hospitals, shelters, loading } = useLiveOperationalData()
+  const { incidents, medicalUnits, reliefCamps, loading } = useLiveOperationalData()
   const [resources, setResources] = useState([])
 
   useEffect(() => {
@@ -30,8 +38,8 @@ export default function AnalyticsPage() {
     return Object.entries(counts).map(([name, value]) => ({ name: name.replace(/_/g, ' '), value }))
   }, [incidents])
 
-  const hospitalData = useMemo(() => hospitals.map((h) => ({ name: h.name.split('—')[1]?.trim() || h.name, load: h.currentLoadPct })), [hospitals])
-  const shelterData = useMemo(() => shelters.map((s) => ({ name: s.name.split('—')[1]?.trim() || s.name, occupancy: Math.round((s.occupied / s.capacity) * 100) })), [shelters])
+  const medicalStatusData = useMemo(() => countBy(medicalUnits, 'status', ['AVAILABLE', 'LIMITED', 'HIGH_DEMAND', 'CRITICAL']), [medicalUnits])
+  const campStatusData = useMemo(() => countBy(reliefCamps, 'capacityStatus', ['AVAILABLE', 'NEAR_CAPACITY', 'FULL']), [reliefCamps])
   const resourceData = useMemo(() => resources.map((r) => ({ name: r.name, available: r.available, allocated: r.allocated, consumed: r.consumed })), [resources])
 
   if (loading) return <LoadingState label="Loading analytics..." />
@@ -39,6 +47,7 @@ export default function AnalyticsPage() {
   return (
     <div className="page">
       <h1 className="page-title"><BarChart3 /> Analytics</h1>
+      <p className="page-subtext" style={{ marginBottom: 16 }}>Operational Simulation &middot; derived from current response-simulation records.</p>
 
       <div className="analytics-grid">
         <div className="card analytics-card">
@@ -68,30 +77,30 @@ export default function AnalyticsPage() {
         </div>
 
         <div className="card analytics-card">
-          <p className="section-label" style={{ marginBottom: 16 }}>Hospital Load (%)</p>
+          <p className="section-label" style={{ marginBottom: 16 }}>Medical Support Status</p>
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={hospitalData}>
+            <BarChart data={medicalStatusData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#DDD8C8" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={50} />
-              <YAxis tick={{ fontSize: 11 }} unit="%" />
+              <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
               <Tooltip />
-              <Bar dataKey="load" radius={[4, 4, 0, 0]}>
-                {hospitalData.map((d, i) => <Cell key={i} fill={d.load >= 90 ? '#A83A3A' : d.load >= 75 ? '#C97A2E' : '#4B7A52'} />)}
+              <Bar dataKey="value" name="Medical units" radius={[4, 4, 0, 0]}>
+                {medicalStatusData.map((d) => <Cell key={d.key} fill={MEDICAL_STATUS_COLORS[d.key]} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         <div className="card analytics-card">
-          <p className="section-label" style={{ marginBottom: 16 }}>Shelter Occupancy (%)</p>
+          <p className="section-label" style={{ marginBottom: 16 }}>Relief Camp Capacity Status</p>
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={shelterData}>
+            <BarChart data={campStatusData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#DDD8C8" vertical={false} />
               <XAxis dataKey="name" tick={{ fontSize: 10 }} interval={0} angle={-15} textAnchor="end" height={50} />
-              <YAxis tick={{ fontSize: 11 }} unit="%" />
+              <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
               <Tooltip />
-              <Bar dataKey="occupancy" radius={[4, 4, 0, 0]}>
-                {shelterData.map((d, i) => <Cell key={i} fill={d.occupancy >= 100 ? '#A83A3A' : d.occupancy >= 85 ? '#C97A2E' : '#4B7A52'} />)}
+              <Bar dataKey="value" name="Relief camps" radius={[4, 4, 0, 0]}>
+                {campStatusData.map((d) => <Cell key={d.key} fill={CAMP_STATUS_COLORS[d.key]} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>

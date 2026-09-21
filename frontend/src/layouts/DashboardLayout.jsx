@@ -4,16 +4,19 @@ import {
   LayoutDashboard,
   Map,
   Siren,
+  MapPinned,
   Users,
   Package,
-  Building2,
+  Stethoscope,
   Home,
+  CookingPot,
+  Bell,
   Sparkles,
   ScrollText,
   BarChart3,
   FlaskConical,
+  Info,
   Settings,
-  Bell,
   Menu,
   X,
 } from 'lucide-react'
@@ -27,14 +30,18 @@ const NAV = [
   { to: '/command-center', label: 'Command Center', icon: LayoutDashboard, end: true },
   { to: '/command-center/map', label: 'Live Map', icon: Map },
   { to: '/incidents', label: 'Incidents', icon: Siren },
+  { to: '/districts', label: 'Districts', icon: MapPinned },
   { to: '/teams', label: 'Response Teams', icon: Users },
   { to: '/resources', label: 'Resources', icon: Package },
-  { to: '/hospitals', label: 'Hospitals', icon: Building2 },
-  { to: '/shelters', label: 'Shelters', icon: Home },
+  { to: '/medical', label: 'Medical Response', icon: Stethoscope },
+  { to: '/relief-camps', label: 'Relief Camps', icon: Home },
+  { to: '/community-kitchens', label: 'Community Kitchens', icon: CookingPot },
+  { to: '/alerts', label: 'Alerts', icon: Bell },
   { to: '/ai-planner', label: 'AI Planner', icon: Sparkles },
   { to: '/decision-log', label: 'Decision Log', icon: ScrollText },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/simulation', label: 'Simulation', icon: FlaskConical },
+  { to: '/data-sources', label: 'Data Sources', icon: Info },
 ]
 
 function SidebarContent({ onNavigate }) {
@@ -120,12 +127,12 @@ export default function DashboardLayout() {
               <Menu style={{ width: 20, height: 20 }} />
             </button>
             <div style={{ minWidth: 0 }}>
-              <p className="dash-topbar-title">NEXUS COMMAND CENTER</p>
+              <p className="dash-topbar-title">BIHAR FLOOD RESPONSE</p>
               <div className="dash-topbar-status">
                 <span className="dash-status-live">
-                  <span className="status-dot animate-pulse-dot" style={{ background: 'var(--success-500)' }} /> SIMULATION ACTIVE
+                  <span className="status-dot animate-pulse-dot" style={{ background: 'var(--success-500)' }} /> RESPONSE SIMULATION ACTIVE
                 </span>
-                <span className="dash-topbar-extra">&middot; Patna, Bihar</span>
+                <span className="dash-topbar-extra">&middot; Bihar &middot; September 2026</span>
                 <span className="dash-topbar-connection">
                   &middot; <span className="status-dot" style={{ background: connected ? 'var(--success-500)' : 'var(--ink-300)' }} />
                   {connected ? 'Live' : 'Offline'}

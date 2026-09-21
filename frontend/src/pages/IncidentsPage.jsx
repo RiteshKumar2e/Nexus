@@ -106,7 +106,7 @@ export default function IncidentsPage() {
                   <span className="incidents-row-id">{inc.incidentId}</span>
                   <span className="incidents-row-type">{inc.type.replace(/_/g, ' ')}</span>
                   <span><StatusBadge status={inc.severity} /></span>
-                  <span className="incidents-row-location">{getZoneName(inc.zone)}</span>
+                  <span className="incidents-row-location">{getZoneName(inc.district)}</span>
                   <span><StatusBadge status={inc.status} /></span>
                   <span className="incidents-row-team">{inc.assignedTeam?.name || 'Unassigned'}</span>
                   <span className="incidents-row-updated">{timeAgo(inc.updatedAt)}</span>

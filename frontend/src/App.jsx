@@ -12,14 +12,19 @@ const CommandCenterPage = lazy(() => import('./pages/CommandCenterPage.jsx'))
 const LiveMapPage = lazy(() => import('./pages/LiveMapPage.jsx'))
 const IncidentsPage = lazy(() => import('./pages/IncidentsPage.jsx'))
 const IncidentDetailPage = lazy(() => import('./pages/IncidentDetailPage.jsx'))
+const DistrictsPage = lazy(() => import('./pages/DistrictsPage.jsx'))
+const DistrictDetailPage = lazy(() => import('./pages/DistrictDetailPage.jsx'))
 const TeamsPage = lazy(() => import('./pages/TeamsPage.jsx'))
 const ResourcesPage = lazy(() => import('./pages/ResourcesPage.jsx'))
-const HospitalsPage = lazy(() => import('./pages/HospitalsPage.jsx'))
-const SheltersPage = lazy(() => import('./pages/SheltersPage.jsx'))
+const MedicalUnitsPage = lazy(() => import('./pages/MedicalUnitsPage.jsx'))
+const ReliefCampsPage = lazy(() => import('./pages/ReliefCampsPage.jsx'))
+const CommunityKitchensPage = lazy(() => import('./pages/CommunityKitchensPage.jsx'))
+const AlertsPage = lazy(() => import('./pages/AlertsPage.jsx'))
 const AIPlannerPage = lazy(() => import('./pages/AIPlannerPage.jsx'))
 const DecisionLogPage = lazy(() => import('./pages/DecisionLogPage.jsx'))
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage.jsx'))
 const SimulationPage = lazy(() => import('./pages/SimulationPage.jsx'))
+const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage.jsx'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'))
 
 export default function App() {
@@ -44,14 +49,19 @@ export default function App() {
           <Route path="/command-center/map" element={<LiveMapPage />} />
           <Route path="/incidents" element={<IncidentsPage />} />
           <Route path="/incidents/:id" element={<IncidentDetailPage />} />
+          <Route path="/districts" element={<DistrictsPage />} />
+          <Route path="/districts/:id" element={<DistrictDetailPage />} />
           <Route path="/teams" element={<TeamsPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
-          <Route path="/hospitals" element={<HospitalsPage />} />
-          <Route path="/shelters" element={<SheltersPage />} />
+          <Route path="/medical" element={<MedicalUnitsPage />} />
+          <Route path="/relief-camps" element={<ReliefCampsPage />} />
+          <Route path="/community-kitchens" element={<CommunityKitchensPage />} />
+          <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/ai-planner" element={<AIPlannerPage />} />
           <Route path="/decision-log" element={<DecisionLogPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/simulation" element={<SimulationPage />} />
+          <Route path="/data-sources" element={<DataSourcesPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

@@ -17,7 +17,7 @@ export default function FeatureShowcase() {
               <div className="feature-card-wide-text">
                 <h3><Map /> Live Situation Map</h3>
                 <p>
-                  Every incident, road, response team, hospital, and shelter plotted on a single
+                  Every incident, road, response team, medical unit, and relief camp plotted on a single
                   operational map that updates as the situation evolves.
                 </p>
               </div>

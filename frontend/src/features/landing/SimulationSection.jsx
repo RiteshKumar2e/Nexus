@@ -5,8 +5,8 @@ import '../../styles/SimulationSection.css'
 
 const EVENTS = [
   { key: 'road', icon: TriangleAlert, label: 'Trigger Road Block' },
-  { key: 'hospital', icon: HeartPulse, label: 'Overload Hospital' },
-  { key: 'shelter', icon: Home, label: 'Fill Shelter' },
+  { key: 'hospital', icon: HeartPulse, label: 'Medical Unit Critical' },
+  { key: 'shelter', icon: Home, label: 'Fill Relief Camp' },
   { key: 'flood', icon: Waves, label: 'Increase Flood' },
 ]
 
