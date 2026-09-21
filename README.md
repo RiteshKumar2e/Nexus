@@ -114,16 +114,16 @@ All routes are mounted under `/api` and (except `/auth/register`, `/auth/login`)
 
 ### Prerequisites
 - Node.js 18+
-- No database server to install — SQLite runs as a local file, created automatically
+- A [Turso](https://turso.tech) database — this app always runs against Turso, local dev included (`turso db create`, `turso db show --url`, `turso db tokens create`)
 - Optional: a Groq API key and a Gemini API key (the app runs without them — AI features fall back to deterministic summaries)
 
 ### Backend
 
 ```bash
 cd backend
-cp .env.example .env     # optionally set SQLITE_PATH, JWT_SECRET, GROQ_API_KEY, GEMINI_API_KEY
+cp .env.example .env     # set TURSO_DATABASE_URL, TURSO_AUTH_TOKEN, JWT_SECRET, GROQ_API_KEY, GEMINI_API_KEY
 npm install
-npm run seed              # creates backend/data/nexus.sqlite and seeds the Patna Flood Response scenario
+npm run seed              # seeds the Bihar Flood 2026 scenario into the Turso database
 npm run dev                # starts on http://localhost:5000
 ```
 
