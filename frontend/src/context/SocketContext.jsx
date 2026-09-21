@@ -12,11 +12,19 @@ export function SocketProvider({ children }) {
   const [connected, setConnected] = useState(false)
 
   useEffect(() => {
-    const socket = io(SOCKET_URL, { transports: ['websocket', 'polling'] })
+    const socket = io(SOCKET_URL, {
+      transports: ['polling', 'websocket'],
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+    })
     socketRef.current = socket
 
     socket.on('connect', () => setConnected(true))
     socket.on('disconnect', () => setConnected(false))
+    socket.on('connect_error', (err) => {
+      if (import.meta.env.DEV) console.warn('[socket] connection retry:', err.message)
+    })
 
     return () => {
       socket.disconnect()
