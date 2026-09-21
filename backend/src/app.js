@@ -12,6 +12,11 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 
+// Render (and most PaaS hosts) sit in front of the app as a single reverse
+// proxy and set X-Forwarded-For. Trusting exactly one hop lets express-rate-limit
+// (and req.ip generally) see the real client IP instead of the proxy's.
+app.set('trust proxy', 1)
+
 app.use(helmet({ crossOriginResourcePolicy: false }))
 app.use(
   cors({
