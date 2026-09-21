@@ -1,11 +1,12 @@
 import { Server } from 'socket.io'
+import { getAllowedOrigins } from '../config/corsOrigins.js'
 
 let io = null
 
 export function initSocket(httpServer) {
   io = new Server(httpServer, {
     cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:5173',
+      origin: getAllowedOrigins(),
       credentials: true,
     },
   })

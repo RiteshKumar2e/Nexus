@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url'
 import routes from './routes/index.js'
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js'
 import { apiLimiter } from './middleware/rateLimiter.js'
+import { getAllowedOrigins } from './config/corsOrigins.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -14,7 +15,7 @@ const app = express()
 app.use(helmet({ crossOriginResourcePolicy: false }))
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: getAllowedOrigins(),
     credentials: true,
   })
 )

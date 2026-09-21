@@ -3,6 +3,7 @@ dist/
 build/
 .env
 .env.local
+ENV-VALUES.txt
 *.log
 .DS_Store
 backend/uploads/*
