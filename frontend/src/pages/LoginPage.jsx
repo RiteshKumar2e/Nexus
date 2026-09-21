@@ -77,9 +77,6 @@ export default function LoginPage() {
           <p className="auth-footnote">
             Don't have an account? <Link to="/register">Create one</Link>
           </p>
-          <p className="auth-demo-hint">
-            Demo: commander@nexus.io / operator@nexus.io / viewer@nexus.io &middot; password "password123"
-          </p>
         </div>
       </div>
 
