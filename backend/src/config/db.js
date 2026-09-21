@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize'
 import path from 'path'
 import fs from 'fs'
 import { fileURLToPath } from 'url'
-import libsqlSqlite3 from '@libsql/sqlite3'
+import libsqlSqlite3 from './libsqlSequelizeDriver.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
