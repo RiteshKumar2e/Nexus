@@ -6,12 +6,12 @@ import ApiError from '../utils/ApiError.js'
 import { emitEvent } from '../socket/index.js'
 
 export const listIncidents = expressAsyncHandler(async (req, res) => {
-  const { severity, status, type, zone, search, page = 1, limit = 20 } = req.query
+  const { severity, status, type, district, search, page = 1, limit = 20 } = req.query
   const where = {}
   if (severity) where.severity = severity
   if (status) where.status = status
   if (type) where.type = type
-  if (zone) where.zone = zone
+  if (district) where.district = district
   if (search) {
     where[Op.or] = [
       { incidentId: { [Op.like]: `%${search}%` } },

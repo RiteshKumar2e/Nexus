@@ -9,8 +9,8 @@ import { seedDatabase } from '../seed/seed.js'
 
 const EVENT_LABELS = {
   ROAD_BLOCKED: 'Road blocked',
-  HOSPITAL_OVERLOAD: 'Hospital overloaded',
-  SHELTER_FULL: 'Shelter full',
+  HOSPITAL_OVERLOAD: 'Medical unit at critical capacity',
+  SHELTER_FULL: 'Relief camp full',
   TEAM_UNAVAILABLE: 'Team unavailable',
   FLOOD_RISING: 'Flood rising',
   SUPPLY_SHORTAGE: 'Supply shortage',

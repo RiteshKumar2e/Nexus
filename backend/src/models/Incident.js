@@ -12,9 +12,11 @@ const Incident = sequelize.define(
     },
     severity: { type: DataTypes.ENUM('LOW', 'MEDIUM', 'HIGH', 'CRITICAL'), defaultValue: 'MEDIUM' },
     status: { type: DataTypes.ENUM('ACTIVE', 'MONITORING', 'RESOLVED'), defaultValue: 'ACTIVE' },
-    zone: { type: DataTypes.STRING, allowNull: false },
+    district: { type: DataTypes.STRING, allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: false },
-    affectedPopulation: { type: DataTypes.INTEGER, defaultValue: 0 },
+    // Qualitative scale instead of an invented precise headcount — this is a
+    // simulated incident, not a verified casualty/affected-population report.
+    populationImpact: { type: DataTypes.ENUM('LOCALIZED', 'MODERATE', 'LARGE', 'SEVERE'), defaultValue: 'MODERATE' },
     requiredResources: { type: DataTypes.JSON, defaultValue: [] },
     evidence: { type: DataTypes.JSON, defaultValue: [] },
     aiAssessment: { type: DataTypes.TEXT, allowNull: true },

@@ -3,9 +3,12 @@ import User from './User.js'
 import Road from './Road.js'
 import ResponseTeam from './ResponseTeam.js'
 import Resource from './Resource.js'
-import Hospital from './Hospital.js'
-import Shelter from './Shelter.js'
+import MedicalUnit from './MedicalUnit.js'
+import ReliefCamp from './ReliefCamp.js'
 import Incident from './Incident.js'
+import District from './District.js'
+import CommunityKitchen from './CommunityKitchen.js'
+import Alert from './Alert.js'
 import ResponsePlan from './ResponsePlan.js'
 import PlanAction from './PlanAction.js'
 import DecisionLog from './DecisionLog.js'
@@ -23,8 +26,8 @@ ResponsePlan.hasMany(PlanAction, { as: 'actions', foreignKey: 'planId', onDelete
 PlanAction.belongsTo(ResponsePlan, { foreignKey: 'planId' })
 PlanAction.belongsTo(ResponseTeam, { as: 'team', foreignKey: 'teamId' })
 PlanAction.belongsTo(Resource, { as: 'resource', foreignKey: 'resourceId' })
-PlanAction.belongsTo(Hospital, { as: 'hospital', foreignKey: 'hospitalId' })
-PlanAction.belongsTo(Shelter, { as: 'shelter', foreignKey: 'shelterId' })
+PlanAction.belongsTo(MedicalUnit, { as: 'medicalUnit', foreignKey: 'medicalUnitId' })
+PlanAction.belongsTo(ReliefCamp, { as: 'reliefCamp', foreignKey: 'reliefCampId' })
 
 DecisionLog.belongsTo(ResponsePlan, { as: 'relatedPlan', foreignKey: 'relatedPlanId' })
 
@@ -38,9 +41,12 @@ export {
   Road,
   ResponseTeam,
   Resource,
-  Hospital,
-  Shelter,
+  MedicalUnit,
+  ReliefCamp,
   Incident,
+  District,
+  CommunityKitchen,
+  Alert,
   ResponsePlan,
   PlanAction,
   DecisionLog,

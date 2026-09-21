@@ -1,7 +1,7 @@
 import Incident from '../models/Incident.js'
 import ResponseTeam from '../models/ResponseTeam.js'
-import Hospital from '../models/Hospital.js'
-import Shelter from '../models/Shelter.js'
+import MedicalUnit from '../models/MedicalUnit.js'
+import ReliefCamp from '../models/ReliefCamp.js'
 import Road from '../models/Road.js'
 import ResponsePlan from '../models/ResponsePlan.js'
 import DecisionLog from '../models/DecisionLog.js'
@@ -38,11 +38,11 @@ async function completeWithFallback(systemPrompt, userPrompt, fallbackText) {
 }
 
 async function gatherOperationalContext() {
-  const [incidents, teams, hospitals, shelters, roads, plans, decisions] = await Promise.all([
+  const [incidents, teams, medicalUnits, reliefCamps, roads, plans, decisions] = await Promise.all([
     Incident.findAll({ where: { status: { [Op.ne]: 'RESOLVED' } }, order: [['severity', 'DESC']], limit: 15 }),
     ResponseTeam.findAll({ limit: 20 }),
-    Hospital.findAll(),
-    Shelter.findAll(),
+    MedicalUnit.findAll(),
+    ReliefCamp.findAll(),
     Road.findAll(),
     ResponsePlan.findAll({ where: { status: 'ACTIVE' }, order: [['createdAt', 'DESC']], limit: 10 }),
     DecisionLog.findAll({ order: [['createdAt', 'DESC']], limit: 10 }),
@@ -53,13 +53,13 @@ async function gatherOperationalContext() {
       id: i.incidentId,
       type: i.type,
       severity: i.severity,
-      zone: i.zone,
+      district: i.district,
       status: i.status,
-      affectedPopulation: i.affectedPopulation,
+      populationImpact: i.populationImpact,
     })),
-    teams: teams.map((t) => ({ name: t.name, type: t.type, status: t.status, zone: t.currentAssignment?.zone })),
-    hospitals: hospitals.map((h) => ({ name: h.name, loadPct: h.currentLoadPct, availableBeds: h.availableBeds, status: h.status })),
-    shelters: shelters.map((s) => ({ name: s.name, occupied: s.occupied, capacity: s.capacity, status: s.status })),
+    teams: teams.map((t) => ({ name: t.name, type: t.type, agency: t.agency, status: t.status, district: t.currentAssignment?.district })),
+    medicalUnits: medicalUnits.map((m) => ({ name: m.name, district: m.district, status: m.status, doctorsStatus: m.doctorsStatus, priorityCases: m.priorityCases })),
+    reliefCamps: reliefCamps.map((c) => ({ name: c.name, district: c.district, capacityStatus: c.capacityStatus, status: c.status })),
     roads: roads.map((r) => ({ id: r.roadId, from: r.from, to: r.to, status: r.status })),
     activePlans: plans.map((p) => ({ planNumber: p.planNumber, trigger: p.trigger, status: p.status, estimatedImpact: p.estimatedImpact })),
     recentDecisions: decisions.map((d) => ({ decisionNumber: d.decisionNumber, trigger: d.trigger, decision: d.decision, result: d.result })),
@@ -72,7 +72,7 @@ export async function answerCopilotQuery(question) {
   const criticalCount = context.activeIncidents.filter((i) => i.severity === 'CRITICAL').length
   const fallback = `Based on current data: ${context.activeIncidents.length} active incidents (${criticalCount} critical), ${
     context.activePlans.length
-  } active response plans, and ${context.hospitals.filter((h) => h.status === 'CRITICAL').length} hospital(s) at critical capacity. AI narrative generation is temporarily unavailable, but the underlying data above is live.`
+  } active response plans, and ${context.medicalUnits.filter((m) => m.status === 'CRITICAL').length} medical unit(s) at critical status. AI narrative generation is temporarily unavailable, but the underlying data above is live.`
 
   const { text, source } = await completeWithFallback(SYSTEM_COPILOT, buildCopilotPrompt(question, context), fallback)
   return { answer: text, source, context }

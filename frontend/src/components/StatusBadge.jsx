@@ -23,10 +23,34 @@ const MAP = {
   pending: 'badge-warning',
   executed: 'badge-success',
   rejected: 'badge-critical',
+
+  // Bihar Flood 2026 status vocabulary
+  critical_shortage: 'badge-critical',
+  high_demand: 'badge-warning',
+  limited: 'badge-warning',
+  near_capacity: 'badge-warning',
+  evacuation_required: 'badge-critical',
+  active_response: 'badge-warning',
+  relief_operations: 'badge-brand',
+  monitoring: 'badge-success',
+  setting_up: 'badge-warning',
+  suspended: 'badge-critical',
+  ongoing: 'badge-success',
+  scheduled: 'badge-neutral',
+  paused: 'badge-warning',
+  localized: 'badge-success',
+  large: 'badge-warning',
+  severe: 'badge-critical',
+  standby: 'badge-neutral',
+  deployed: 'badge-brand',
+  maintenance: 'badge-neutral',
+  accessible: 'badge-success',
+  partially_accessible: 'badge-warning',
+  difficult: 'badge-critical',
 }
 
 export default function StatusBadge({ status, label }) {
   const key = String(status || '').toLowerCase().replace(/\s+/g, '_')
   const cls = MAP[key] || 'badge-neutral'
-  return <span className={cls}>{label || status}</span>
+  return <span className={cls}>{label || String(status || '').replace(/_/g, ' ')}</span>
 }

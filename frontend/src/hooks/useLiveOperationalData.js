@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import { getIncidents } from '../services/incidents.js'
 import { getTeams } from '../services/teams.js'
-import { getHospitals } from '../services/hospitals.js'
-import { getShelters } from '../services/shelters.js'
+import { getMedicalUnits } from '../services/medicalUnits.js'
+import { getReliefCamps } from '../services/reliefCamps.js'
 import { getRoads } from '../services/roads.js'
 import { useSocket } from '../context/SocketContext.jsx'
 
@@ -26,8 +26,8 @@ export function useLiveOperationalData() {
   const { socket } = useSocket()
   const [incidents, setIncidents] = useState([])
   const [teams, setTeams] = useState([])
-  const [hospitals, setHospitals] = useState([])
-  const [shelters, setShelters] = useState([])
+  const [medicalUnits, setMedicalUnits] = useState([])
+  const [reliefCamps, setReliefCamps] = useState([])
   const [roads, setRoads] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -36,17 +36,17 @@ export function useLiveOperationalData() {
     setLoading(true)
     setError(null)
     try {
-      const [i, t, h, s, r] = await Promise.all([
+      const [i, t, m, c, r] = await Promise.all([
         getIncidents({ limit: 100 }),
         getTeams(),
-        getHospitals(),
-        getShelters(),
+        getMedicalUnits(),
+        getReliefCamps(),
         getRoads(),
       ])
       setIncidents(i.items)
       setTeams(t.items)
-      setHospitals(h.items)
-      setShelters(s.items)
+      setMedicalUnits(m.items)
+      setReliefCamps(c.items)
       setRoads(r.items)
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to load operational data.')
@@ -65,16 +65,16 @@ export function useLiveOperationalData() {
     const onIncidentCreated = ({ incident }) => setIncidents((l) => upsert(l, incident))
     const onIncidentUpdated = ({ incident }) => setIncidents((l) => upsert(l, incident))
     const onTeamUpdated = ({ team }) => setTeams((l) => upsert(l, team))
-    const onHospitalUpdated = ({ hospital }) => setHospitals((l) => upsert(l, hospital))
-    const onShelterUpdated = ({ shelter }) => setShelters((l) => upsert(l, shelter))
+    const onMedicalUnitUpdated = ({ medicalUnit }) => setMedicalUnits((l) => upsert(l, medicalUnit))
+    const onReliefCampUpdated = ({ reliefCamp }) => setReliefCamps((l) => upsert(l, reliefCamp))
     const onRoadUpdated = ({ road }) => setRoads((l) => upsertByKey(l, road, 'roadId'))
     const onReset = () => loadAll()
 
     socket.on('incident:created', onIncidentCreated)
     socket.on('incident:updated', onIncidentUpdated)
     socket.on('team:updated', onTeamUpdated)
-    socket.on('hospital:updated', onHospitalUpdated)
-    socket.on('shelter:updated', onShelterUpdated)
+    socket.on('medicalUnit:updated', onMedicalUnitUpdated)
+    socket.on('reliefCamp:updated', onReliefCampUpdated)
     socket.on('road:blocked', onRoadUpdated)
     socket.on('road:updated', onRoadUpdated)
     socket.on('simulation:reset', onReset)
@@ -83,13 +83,13 @@ export function useLiveOperationalData() {
       socket.off('incident:created', onIncidentCreated)
       socket.off('incident:updated', onIncidentUpdated)
       socket.off('team:updated', onTeamUpdated)
-      socket.off('hospital:updated', onHospitalUpdated)
-      socket.off('shelter:updated', onShelterUpdated)
+      socket.off('medicalUnit:updated', onMedicalUnitUpdated)
+      socket.off('reliefCamp:updated', onReliefCampUpdated)
       socket.off('road:blocked', onRoadUpdated)
       socket.off('road:updated', onRoadUpdated)
       socket.off('simulation:reset', onReset)
     }
   }, [socket, loadAll])
 
-  return { incidents, teams, hospitals, shelters, roads, loading, error, reload: loadAll }
+  return { incidents, teams, medicalUnits, reliefCamps, roads, loading, error, reload: loadAll }
 }

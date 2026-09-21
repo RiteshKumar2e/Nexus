@@ -5,9 +5,8 @@ import { withMongoCompatId } from './_compat.js'
 const SimulationState = sequelize.define(
   'SimulationState',
   {
-    scenario: { type: DataTypes.STRING, defaultValue: 'PATNA FLOOD RESPONSE' },
+    scenario: { type: DataTypes.STRING, defaultValue: 'BIHAR FLOOD RESPONSE 2026' },
     status: { type: DataTypes.ENUM('IDLE', 'RUNNING', 'PAUSED'), defaultValue: 'IDLE' },
-    populationAffected: { type: DataTypes.INTEGER, defaultValue: 24800 },
     startedAt: { type: DataTypes.DATE, allowNull: true },
   },
   { tableName: 'simulation_states' }

@@ -2,11 +2,16 @@ import expressAsyncHandler from 'express-async-handler'
 import { Op } from 'sequelize'
 import Incident from '../models/Incident.js'
 import ResponseTeam from '../models/ResponseTeam.js'
-import Hospital from '../models/Hospital.js'
-import Shelter from '../models/Shelter.js'
+import MedicalUnit from '../models/MedicalUnit.js'
+import ReliefCamp from '../models/ReliefCamp.js'
 import Resource from '../models/Resource.js'
+import District from '../models/District.js'
+import CommunityKitchen from '../models/CommunityKitchen.js'
+import Alert from '../models/Alert.js'
 import ResponsePlan from '../models/ResponsePlan.js'
 import SimulationState from '../models/SimulationState.js'
+
+const WORST = (statuses, order) => order.find((s) => statuses.includes(s)) || order[order.length - 1]
 
 export const getSummary = expressAsyncHandler(async (req, res) => {
   const [
@@ -14,10 +19,13 @@ export const getSummary = expressAsyncHandler(async (req, res) => {
     criticalIncidents,
     teamsTotal,
     teamsActive,
-    hospitalsTotal,
-    hospitalsHealthy,
-    shelters,
+    districts,
+    medicalUnits,
+    reliefCamps,
     resources,
+    kitchensActive,
+    kitchensTotal,
+    criticalAlerts,
     activePlan,
     simState,
   ] = await Promise.all([
@@ -25,32 +33,44 @@ export const getSummary = expressAsyncHandler(async (req, res) => {
     Incident.count({ where: { severity: 'CRITICAL', status: { [Op.ne]: 'RESOLVED' } } }),
     ResponseTeam.count(),
     ResponseTeam.count({ where: { status: { [Op.in]: ['BUSY', 'EN_ROUTE'] } } }),
-    Hospital.count(),
-    Hospital.count({ where: { status: 'NORMAL' } }),
-    Shelter.findAll(),
+    District.findAll(),
+    MedicalUnit.findAll(),
+    ReliefCamp.findAll(),
     Resource.findAll(),
+    CommunityKitchen.count({ where: { status: 'ACTIVE' } }),
+    CommunityKitchen.count(),
+    Alert.count({ where: { severity: 'CRITICAL' } }),
     ResponsePlan.findOne({
       where: { status: 'ACTIVE' },
       order: [['createdAt', 'DESC']],
-      include: [{ association: 'incident' }, { association: 'actions', include: ['team', 'hospital', 'shelter'] }],
+      include: [{ association: 'incident' }, { association: 'actions', include: ['team', 'medicalUnit', 'reliefCamp'] }],
     }),
     SimulationState.findOne(),
   ])
 
-  const shelterCapacity = shelters.reduce((sum, s) => sum + s.capacity, 0)
-  const shelterOccupied = shelters.reduce((sum, s) => sum + s.occupied, 0)
-  const resourcesCritical = resources.some((r) => r.status === 'CRITICAL')
-  const resourcesLow = resources.some((r) => r.status === 'LOW')
+  const criticalDistricts = districts.filter((d) => d.riskLevel === 'CRITICAL').length
+  const activeReliefCamps = reliefCamps.filter((c) => c.status === 'ACTIVE').length
+  const fullReliefCamps = reliefCamps.filter((c) => c.capacityStatus === 'FULL').length
+
+  const medicalStatus = WORST(medicalUnits.map((m) => m.status), ['CRITICAL', 'HIGH_DEMAND', 'LIMITED', 'AVAILABLE'])
+  const resourceStatus = WORST(resources.map((r) => r.status), ['CRITICAL_SHORTAGE', 'MAINTENANCE', 'STANDBY', 'DEPLOYED', 'AVAILABLE'])
 
   res.json({
+    affectedDistricts: districts.length,
+    criticalDistricts,
     activeIncidents,
     criticalIncidents,
     teamsTotal,
     teamsActive,
-    hospitalsTotal,
-    hospitalsHealthy,
-    shelterCapacityPct: shelterCapacity ? Math.round((shelterOccupied / shelterCapacity) * 100) : 0,
-    resourceStatus: resourcesCritical ? 'CRITICAL' : resourcesLow ? 'LOW' : 'HEALTHY',
+    medicalUnitsTotal: medicalUnits.length,
+    medicalStatus,
+    reliefCampsTotal: reliefCamps.length,
+    activeReliefCamps,
+    fullReliefCamps,
+    resourceStatus,
+    kitchensActive,
+    kitchensTotal,
+    criticalAlerts,
     activePlan,
     simulation: simState,
   })

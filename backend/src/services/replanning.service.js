@@ -1,10 +1,11 @@
 import { Op } from 'sequelize'
 import Road from '../models/Road.js'
 import ResponseTeam from '../models/ResponseTeam.js'
-import Hospital from '../models/Hospital.js'
-import Shelter from '../models/Shelter.js'
+import MedicalUnit from '../models/MedicalUnit.js'
+import ReliefCamp from '../models/ReliefCamp.js'
 import Resource from '../models/Resource.js'
 import Incident from '../models/Incident.js'
+import Alert from '../models/Alert.js'
 import ResponsePlan from '../models/ResponsePlan.js'
 import PlanAction from '../models/PlanAction.js'
 import DecisionLog from '../models/DecisionLog.js'
@@ -12,18 +13,18 @@ import { findShortestRoute } from './routeEngine.service.js'
 import { nextPlanNumber, nextDecisionNumber } from './counters.service.js'
 import { emitEvent } from '../socket/index.js'
 import { explainDecision } from '../ai/ai.service.js'
+import { ZONES } from '../config/zones.js'
 
-const ZONE_NAMES = {
-  ZoneA: 'Zone A — Patliputra',
-  ZoneB: 'Zone B — Kankarbagh',
-  ZoneC: 'Zone C — Digha',
-  ZoneD: 'Zone D — Rajendra Nagar',
-  ZoneE: 'Zone E — Danapur',
-}
+const DISTRICT_NAMES = Object.fromEntries(ZONES.map((z) => [z.id, z.name]))
+const DISTRICT_IDS = ZONES.filter((z) => z.type === 'district').map((z) => z.id)
+
+// Ordered best-to-worst so "pick the least-bad alternative" is a simple sort.
+const MEDICAL_STATUS_RANK = { AVAILABLE: 0, LIMITED: 1, HIGH_DEMAND: 2, CRITICAL: 3 }
+const CAMP_STATUS_RANK = { AVAILABLE: 0, NEAR_CAPACITY: 1, FULL: 2 }
 
 const PLAN_INCLUDE = [
   { association: 'incident' },
-  { association: 'actions', include: ['team', 'hospital', 'shelter'] },
+  { association: 'actions', include: ['team', 'medicalUnit', 'reliefCamp'] },
 ]
 
 async function loadFullPlan(id) {
@@ -58,6 +59,12 @@ async function createDecisionLog({ trigger, agents, decision, reason, result, re
   return log
 }
 
+async function createAlert({ severity, message, district = null, title = 'Simulation alert' }) {
+  const alert = await Alert.create({ title, message, severity, district, sourceType: 'SIMULATED', source: 'Response Simulation' })
+  emitEvent('alert:created', { alert: alert.toJSON() })
+  return alert
+}
+
 async function invalidatePlansUsingRoad(roadId) {
   const activePlans = await ResponsePlan.findAll({ where: { status: 'ACTIVE' }, include: [{ association: 'actions' }] })
   const affected = activePlans.filter((plan) => plan.actions.some((a) => (a.roadsUsed || []).includes(roadId)))
@@ -74,25 +81,24 @@ async function findAlternateTeam(type, excludeId) {
   return ResponseTeam.findOne({ where: { type, status: 'AVAILABLE', id: { [Op.ne]: excludeId } } })
 }
 
-async function findBestHospital(excludeId) {
-  return Hospital.findOne({ where: { status: { [Op.ne]: 'CRITICAL' }, id: { [Op.ne]: excludeId } }, order: [['currentLoadPct', 'ASC']] })
+async function findBestMedicalUnit(excludeId) {
+  const units = await MedicalUnit.findAll({ where: { status: { [Op.ne]: 'CRITICAL' }, id: { [Op.ne]: excludeId } } })
+  return units.sort((a, b) => (MEDICAL_STATUS_RANK[a.status] ?? 9) - (MEDICAL_STATUS_RANK[b.status] ?? 9))[0] || null
 }
 
-async function findBestShelter(excludeId) {
-  const shelters = await Shelter.findAll({ where: { status: { [Op.ne]: 'FULL' }, id: { [Op.ne]: excludeId } } })
-  return shelters
-    .map((s) => ({ s, free: s.capacity - s.occupied }))
-    .sort((a, b) => b.free - a.free)[0]?.s || null
+async function findBestReliefCamp(excludeId) {
+  const camps = await ReliefCamp.findAll({ where: { capacityStatus: { [Op.ne]: 'FULL' }, id: { [Op.ne]: excludeId } } })
+  return camps.sort((a, b) => (CAMP_STATUS_RANK[a.capacityStatus] ?? 9) - (CAMP_STATUS_RANK[b.capacityStatus] ?? 9))[0] || null
 }
 
 async function buildPlanFromTeamRoute({ team, incident, trigger, previousPlanId }) {
-  const targetZone = team.currentAssignment.zone
-  const route = await findShortestRoute(team.location, targetZone)
+  const targetDistrict = team.currentAssignment.district
+  const route = await findShortestRoute(team.location, targetDistrict)
 
   if (!route) {
     return {
       failed: true,
-      reason: `No available route from ${team.location} to ${targetZone}. All roads impassable.`,
+      reason: `No available route from ${team.location} to ${targetDistrict}. All roads impassable.`,
     }
   }
 
@@ -114,11 +120,11 @@ async function buildPlanFromTeamRoute({ team, incident, trigger, previousPlanId 
           type: 'TEAM_DISPATCH',
           teamId: team.id,
           fromNode: team.location,
-          toNode: targetZone,
+          toNode: targetDistrict,
           route: route.route,
           roadsUsed: route.roadsUsed,
           etaMin: route.etaMin,
-          description: `${team.name} dispatched to ${ZONE_NAMES[targetZone] || targetZone} via ${route.roadsUsed.join(' → ')}`,
+          description: `${team.name} dispatched to ${DISTRICT_NAMES[targetDistrict] || targetDistrict} via ${route.roadsUsed.join(' → ')}`,
         },
       ],
       affectedResources: [team.name],
@@ -189,24 +195,25 @@ async function handleRoadBlocked({ roadId }) {
 }
 
 async function handleHospitalOverload({ hospitalId }) {
-  const hospital = await Hospital.findByPk(hospitalId)
-  if (!hospital) return { error: 'Hospital not found.' }
+  const medicalUnit = await MedicalUnit.findByPk(hospitalId)
+  if (!medicalUnit) return { error: 'Medical unit not found.' }
 
-  hospital.currentLoadPct = Math.max(hospital.currentLoadPct, 96)
-  hospital.availableBeds = Math.max(0, Math.round(hospital.totalBeds * 0.02))
-  hospital.status = 'CRITICAL'
-  await hospital.save()
-  emitEvent('hospital:updated', { hospital: hospital.toJSON() })
+  medicalUnit.status = 'CRITICAL'
+  medicalUnit.doctorsStatus = 'CRITICAL'
+  medicalUnit.ambulanceStatus = 'HIGH_DEMAND'
+  medicalUnit.priorityCases = 'CRITICAL'
+  await medicalUnit.save()
+  emitEvent('medicalUnit:updated', { medicalUnit: medicalUnit.toJSON() })
 
-  const alternate = await findBestHospital(hospital.id)
+  const alternate = await findBestMedicalUnit(medicalUnit.id)
   const plans = await ResponsePlan.findAll({ where: { status: 'ACTIVE' }, include: [{ association: 'actions' }] })
-  const affectedPlans = plans.filter((p) => p.actions.some((a) => a.hospitalId === hospital.id))
+  const affectedPlans = plans.filter((p) => p.actions.some((a) => a.medicalUnitId === medicalUnit.id))
 
   const results = []
   for (const plan of affectedPlans) {
     plan.status = 'INVALIDATED'
     await plan.save()
-    emitEvent('plan:invalidated', { planId: plan.id, planNumber: plan.planNumber, reason: `Hospital ${hospital.name} overloaded` })
+    emitEvent('plan:invalidated', { planId: plan.id, planNumber: plan.planNumber, reason: `Medical unit ${medicalUnit.name} at critical capacity` })
 
     if (!alternate) continue
 
@@ -215,18 +222,18 @@ async function handleHospitalOverload({ hospitalId }) {
       {
         planNumber,
         status: 'ACTIVE',
-        trigger: `Hospital ${hospital.name} reached critical capacity`,
+        trigger: `Medical unit ${medicalUnit.name} reached critical status`,
         previousPlanId: plan.id,
         actions: [
           {
             type: 'AMBULANCE_TRANSPORT',
-            hospitalId: alternate.id,
-            description: `Patients redirected to ${alternate.name} (${alternate.currentLoadPct}% load).`,
+            medicalUnitId: alternate.id,
+            description: `Patients redirected to ${alternate.name} (status: ${alternate.status}).`,
           },
         ],
-        affectedResources: [hospital.name, alternate.name],
+        affectedResources: [medicalUnit.name, alternate.name],
         estimatedImpact: `Redirect to ${alternate.name}`,
-        reasoning: `${hospital.name} exceeded safe capacity threshold.`,
+        reasoning: `${medicalUnit.name} exceeded safe operating capacity.`,
       },
       { include: [{ association: 'actions' }] }
     )
@@ -235,11 +242,11 @@ async function handleHospitalOverload({ hospitalId }) {
     emitEvent('plan:activated', { planId: newPlan.id, planNumber: newPlan.planNumber })
 
     const decision = await createDecisionLog({
-      trigger: `Hospital ${hospital.name} overloaded`,
+      trigger: `Medical unit ${medicalUnit.name} overloaded`,
       agents: ['Resource Agent', 'Risk Agent', 'Planning Agent'],
       decision: `Redirect new patients to ${alternate.name}.`,
-      reason: `${hospital.name} reached ${hospital.currentLoadPct}% capacity, exceeding the safe threshold.`,
-      result: `Incoming patients now routed to ${alternate.name} (${alternate.currentLoadPct}% load).`,
+      reason: `${medicalUnit.name} reached critical status, exceeding safe operating capacity.`,
+      result: `Incoming patients now routed to ${alternate.name} (status: ${alternate.status}).`,
       relatedPlanId: newPlan.id,
     })
     results.push({ plan: newPlan, decision })
@@ -247,36 +254,35 @@ async function handleHospitalOverload({ hospitalId }) {
 
   if (!alternate) {
     await createDecisionLog({
-      trigger: `Hospital ${hospital.name} overloaded`,
+      trigger: `Medical unit ${medicalUnit.name} overloaded`,
       agents: ['Resource Agent', 'Risk Agent'],
-      decision: 'No alternate hospital available with spare capacity.',
-      reason: 'All monitored hospitals are at or near capacity.',
+      decision: 'No alternate medical unit available with spare capacity.',
+      reason: 'All monitored medical units are at or near critical status.',
       result: 'Escalation required — consider field triage.',
       status: 'PENDING',
     })
   }
 
-  return { hospital, alternate, results }
+  return { hospital: medicalUnit, alternate, results }
 }
 
 async function handleShelterFull({ shelterId }) {
-  const shelter = await Shelter.findByPk(shelterId)
-  if (!shelter) return { error: 'Shelter not found.' }
+  const reliefCamp = await ReliefCamp.findByPk(shelterId)
+  if (!reliefCamp) return { error: 'Relief camp not found.' }
 
-  shelter.occupied = shelter.capacity
-  shelter.status = 'FULL'
-  await shelter.save()
-  emitEvent('shelter:updated', { shelter: shelter.toJSON() })
+  reliefCamp.capacityStatus = 'FULL'
+  await reliefCamp.save()
+  emitEvent('reliefCamp:updated', { reliefCamp: reliefCamp.toJSON() })
 
-  const alternate = await findBestShelter(shelter.id)
+  const alternate = await findBestReliefCamp(reliefCamp.id)
   const plans = await ResponsePlan.findAll({ where: { status: 'ACTIVE' }, include: [{ association: 'actions' }] })
-  const affectedPlans = plans.filter((p) => p.actions.some((a) => a.shelterId === shelter.id))
+  const affectedPlans = plans.filter((p) => p.actions.some((a) => a.reliefCampId === reliefCamp.id))
 
   const results = []
   for (const plan of affectedPlans) {
     plan.status = 'INVALIDATED'
     await plan.save()
-    emitEvent('plan:invalidated', { planId: plan.id, planNumber: plan.planNumber, reason: `Shelter ${shelter.name} full` })
+    emitEvent('plan:invalidated', { planId: plan.id, planNumber: plan.planNumber, reason: `Relief camp ${reliefCamp.name} full` })
 
     if (!alternate) continue
 
@@ -285,18 +291,18 @@ async function handleShelterFull({ shelterId }) {
       {
         planNumber,
         status: 'ACTIVE',
-        trigger: `Shelter ${shelter.name} reached full capacity`,
+        trigger: `Relief camp ${reliefCamp.name} reached full capacity`,
         previousPlanId: plan.id,
         actions: [
           {
             type: 'EVACUATION',
-            shelterId: alternate.id,
+            reliefCampId: alternate.id,
             description: `Evacuation destination changed to ${alternate.name}.`,
           },
         ],
-        affectedResources: [shelter.name, alternate.name],
+        affectedResources: [reliefCamp.name, alternate.name],
         estimatedImpact: `Redirect evacuees to ${alternate.name}`,
-        reasoning: `${shelter.name} is full.`,
+        reasoning: `${reliefCamp.name} is full.`,
       },
       { include: [{ association: 'actions' }] }
     )
@@ -305,17 +311,17 @@ async function handleShelterFull({ shelterId }) {
     emitEvent('plan:activated', { planId: newPlan.id, planNumber: newPlan.planNumber })
 
     const decision = await createDecisionLog({
-      trigger: `Shelter ${shelter.name} full`,
+      trigger: `Relief camp ${reliefCamp.name} full`,
       agents: ['Resource Agent', 'Planning Agent'],
       decision: `Redirect evacuation to ${alternate.name}.`,
-      reason: `${shelter.name} reached full occupancy (${shelter.capacity}/${shelter.capacity}).`,
-      result: `Evacuees now routed to ${alternate.name} (${alternate.capacity - alternate.occupied} spaces available).`,
+      reason: `${reliefCamp.name} reached full capacity.`,
+      result: `Evacuees now routed to ${alternate.name} (capacity status: ${alternate.capacityStatus}).`,
       relatedPlanId: newPlan.id,
     })
     results.push({ plan: newPlan, decision })
   }
 
-  return { shelter, alternate, results }
+  return { shelter: reliefCamp, alternate, results }
 }
 
 async function handleTeamUnavailable({ teamId }) {
@@ -337,8 +343,8 @@ async function handleTeamUnavailable({ teamId }) {
     emitEvent('plan:invalidated', { planId: plan.id, planNumber: plan.planNumber, reason: `${team.name} unavailable` })
 
     if (!alternate) continue
-    const toNode = plan.actions[0]?.toNode || alternate.currentAssignment.zone
-    alternate.currentAssignment = { ...alternate.currentAssignment, zone: toNode }
+    const toNode = plan.actions[0]?.toNode || alternate.currentAssignment.district
+    alternate.currentAssignment = { ...alternate.currentAssignment, district: toNode }
     const outcome = await buildPlanFromTeamRoute({
       team: alternate,
       incident: plan.incidentId ? { id: plan.incidentId } : null,
@@ -362,7 +368,8 @@ async function handleTeamUnavailable({ teamId }) {
 }
 
 async function handleFloodRising({ zone }) {
-  const roads = await Road.findAll({ where: { [Op.or]: [{ from: zone }, { to: zone }] } })
+  const district = zone
+  const roads = await Road.findAll({ where: { [Op.or]: [{ from: district }, { to: district }] } })
   const updated = []
   for (const road of roads) {
     if (road.status === 'OPEN') road.status = 'CONGESTED'
@@ -374,16 +381,18 @@ async function handleFloodRising({ zone }) {
   }
 
   const decision = await createDecisionLog({
-    trigger: `Flood levels rising near ${ZONE_NAMES[zone] || zone}`,
+    trigger: `Flood levels rising near ${DISTRICT_NAMES[district] || district}`,
     agents: ['Situation Agent', 'Risk Agent'],
     decision: `Elevated risk rating on ${updated.length} connecting road${updated.length === 1 ? '' : 's'}.`,
     reason: 'Rising water levels increase transit risk and reduce safe travel speed.',
     result: updated.map((r) => `${r.roadId}: ${r.status}`).join(', ') || 'No connected roads found.',
   })
 
-  emitEvent('alert:created', {
-    severity: 'warning',
-    message: `Flood rising near ${ZONE_NAMES[zone] || zone}. ${updated.length} road(s) re-rated.`,
+  await createAlert({
+    title: `Flood rising — ${DISTRICT_NAMES[district] || district}`,
+    severity: 'HIGH',
+    district,
+    message: `Flood levels rising near ${DISTRICT_NAMES[district] || district}. ${updated.length} road(s) re-rated.`,
   })
 
   return { updated, decision }
@@ -394,37 +403,46 @@ async function handleSupplyShortage({ resourceId }) {
   if (!resource) return { error: 'Resource not found.' }
 
   resource.available = Math.max(0, Math.round(resource.available * 0.35))
-  resource.status = resource.available / resource.total < 0.15 ? 'CRITICAL' : 'LOW'
+  resource.status = 'CRITICAL_SHORTAGE'
   await resource.save()
   emitEvent('resource:updated', { resource: resource.toJSON() })
 
   const decision = await createDecisionLog({
-    trigger: `Supply shortage: ${resource.name}`,
+    trigger: `Supply shortage: ${resource.name}${resource.region ? ` (${DISTRICT_NAMES[resource.region] || resource.region})` : ''}`,
     agents: ['Resource Agent'],
-    decision: `${resource.name} marked ${resource.status}.`,
-    reason: `Available stock dropped to ${resource.available}/${resource.total} ${resource.unit}.`,
+    decision: `${resource.name} marked CRITICAL SHORTAGE.`,
+    reason: `Available stock dropped sharply against required deployment levels.`,
     result: 'Resupply request flagged for command review.',
     status: 'PENDING',
   })
 
-  emitEvent('alert:created', {
-    severity: resource.status === 'CRITICAL' ? 'critical' : 'warning',
-    message: `${resource.name} supply is ${resource.status.toLowerCase()} (${resource.available}/${resource.total} ${resource.unit}).`,
+  await createAlert({
+    title: `Supply shortage — ${resource.name}`,
+    severity: 'CRITICAL',
+    district: resource.region || null,
+    message: `${resource.name} supply is at critical shortage${resource.region ? ` in ${DISTRICT_NAMES[resource.region] || resource.region}` : ''}.`,
   })
 
   return { resource, decision }
 }
 
+// Bihar flood-relevant templates for the "simulate new incident" demo button.
+// This stays a live, clearly-labeled simulation feature (see SimulationPage),
+// not a static data fixture — but the pool is scenario-appropriate rather
+// than generic, and no numeric population figure is invented (a qualitative
+// impact level is picked instead).
 const INCIDENT_TEMPLATES = [
-  { type: 'WATER_RESCUE', description: 'Family stranded on rooftop as water levels rise.', resources: ['Boats', 'Rescue Teams'] },
+  { type: 'WATER_RESCUE', description: 'Family stranded on rooftop as water levels rise.', resources: ['Rescue Boats', 'Rescue Teams'] },
   { type: 'MEDICAL_EMERGENCY', description: 'Multiple residents reporting waterborne illness symptoms.', resources: ['Medical Kits', 'Ambulances'] },
   { type: 'INFRASTRUCTURE', description: 'Embankment showing signs of structural weakening.', resources: ['Rescue Teams', 'Equipment'] },
+  { type: 'FLOOD', description: 'Sudden waterlogging cutting off a residential block.', resources: ['Rescue Boats', 'Drinking Water'] },
+  { type: 'MEDICAL_EMERGENCY', description: 'Elderly residents requiring evacuation for ongoing medical treatment.', resources: ['Ambulances'] },
 ]
+const POPULATION_IMPACTS = ['LOCALIZED', 'MODERATE', 'LARGE']
 
 async function handleNewIncident() {
-  const zones = ['ZoneA', 'ZoneB', 'ZoneC', 'ZoneD', 'ZoneE']
   const template = INCIDENT_TEMPLATES[Math.floor(Math.random() * INCIDENT_TEMPLATES.length)]
-  const zone = zones[Math.floor(Math.random() * zones.length)]
+  const district = DISTRICT_IDS[Math.floor(Math.random() * DISTRICT_IDS.length)]
   const count = await Incident.count()
 
   const incident = await Incident.create({
@@ -432,9 +450,9 @@ async function handleNewIncident() {
     type: template.type,
     severity: Math.random() > 0.6 ? 'HIGH' : 'MEDIUM',
     status: 'ACTIVE',
-    zone,
+    district,
     description: template.description,
-    affectedPopulation: Math.floor(Math.random() * 400) + 20,
+    populationImpact: POPULATION_IMPACTS[Math.floor(Math.random() * POPULATION_IMPACTS.length)],
     requiredResources: template.resources,
   })
   emitEvent('incident:created', { incident: incident.toJSON() })
@@ -442,7 +460,7 @@ async function handleNewIncident() {
   const team = await ResponseTeam.findOne({ where: { status: 'AVAILABLE' } })
   let planResult = null
   if (team) {
-    team.currentAssignment = { ...team.currentAssignment, zone }
+    team.currentAssignment = { ...team.currentAssignment, district }
     planResult = await buildPlanFromTeamRoute({ team, incident, trigger: `New incident ${incident.incidentId} reported` })
     if (!planResult.failed) {
       incident.assignedTeamId = team.id
@@ -453,7 +471,7 @@ async function handleNewIncident() {
   const decision = await createDecisionLog({
     trigger: `New incident reported: ${incident.incidentId}`,
     agents: ['Situation Agent', 'Planning Agent'],
-    decision: team ? `${team.name} dispatched to ${incident.zone}.` : 'No team currently available for dispatch.',
+    decision: team ? `${team.name} dispatched to ${DISTRICT_NAMES[incident.district] || incident.district}.` : 'No team currently available for dispatch.',
     reason: incident.description,
     result: team ? `ETA ${planResult?.route?.etaMin ?? '—'} min` : 'Incident queued for the next available team.',
     status: team ? 'EXECUTED' : 'PENDING',

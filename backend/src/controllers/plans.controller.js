@@ -5,7 +5,7 @@ import { emitEvent } from '../socket/index.js'
 
 const INCLUDE = [
   { association: 'incident' },
-  { association: 'actions', include: ['team', 'hospital', 'shelter'] },
+  { association: 'actions', include: ['team', 'medicalUnit', 'reliefCamp'] },
 ]
 
 export const listPlans = expressAsyncHandler(async (req, res) => {

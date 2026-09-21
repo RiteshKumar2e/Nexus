@@ -3,8 +3,11 @@ import authRoutes from './auth.routes.js'
 import incidentsRoutes from './incidents.routes.js'
 import teamsRoutes from './teams.routes.js'
 import resourcesRoutes from './resources.routes.js'
-import hospitalsRoutes from './hospitals.routes.js'
-import sheltersRoutes from './shelters.routes.js'
+import medicalUnitsRoutes from './medicalUnits.routes.js'
+import reliefCampsRoutes from './reliefCamps.routes.js'
+import communityKitchensRoutes from './communityKitchens.routes.js'
+import districtsRoutes from './districts.routes.js'
+import alertsRoutes from './alerts.routes.js'
 import roadsRoutes from './roads.routes.js'
 import plansRoutes from './plans.routes.js'
 import simulationRoutes from './simulation.routes.js'
@@ -18,8 +21,11 @@ router.use('/auth', authRoutes)
 router.use('/incidents', incidentsRoutes)
 router.use('/teams', teamsRoutes)
 router.use('/resources', resourcesRoutes)
-router.use('/hospitals', hospitalsRoutes)
-router.use('/shelters', sheltersRoutes)
+router.use('/medical', medicalUnitsRoutes)
+router.use('/relief-camps', reliefCampsRoutes)
+router.use('/community-kitchens', communityKitchensRoutes)
+router.use('/districts', districtsRoutes)
+router.use('/alerts', alertsRoutes)
 router.use('/roads', roadsRoutes)
 router.use('/plans', plansRoutes)
 router.use('/simulation', simulationRoutes)
