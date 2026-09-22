@@ -1,7 +1,9 @@
 import axios from 'axios'
 import fs from 'fs'
 
-const MODEL = 'gemini-1.5-flash'
+// gemini-1.5-flash was retired; gemini-flash-latest always points at the
+// current default Flash model so this doesn't go stale again.
+const MODEL = 'gemini-flash-latest'
 
 function endpoint() {
   const apiKey = process.env.GEMINI_API_KEY

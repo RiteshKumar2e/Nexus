@@ -35,7 +35,6 @@ export default function App() {
       <Routes>
         <Route element={<MarketingLayout />}>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/data-sources" element={<DataSourcesPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
         </Route>
@@ -66,6 +65,7 @@ export default function App() {
           <Route path="/decision-log" element={<DecisionLogPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/simulation" element={<SimulationPage />} />
+          <Route path="/data-sources" element={<DataSourcesPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

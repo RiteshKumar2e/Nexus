@@ -1,7 +1,11 @@
 import axios from 'axios'
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
-const MODEL = 'llama-3.3-70b-versatile'
+// llama-3.3-70b-versatile was retired from Groq's catalog; gpt-oss-120b is
+// the current flagship text model there. It's a reasoning model, so
+// reasoning_effort is kept low to leave enough of max_tokens for the
+// actual answer instead of being consumed by hidden reasoning tokens.
+const MODEL = 'openai/gpt-oss-120b'
 
 export async function groqChat(systemPrompt, userPrompt, { maxTokens = 400, temperature = 0.3 } = {}) {
   const apiKey = process.env.GROQ_API_KEY
@@ -17,6 +21,7 @@ export async function groqChat(systemPrompt, userPrompt, { maxTokens = 400, temp
       ],
       max_tokens: maxTokens,
       temperature,
+      reasoning_effort: 'low',
     },
     {
       headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },

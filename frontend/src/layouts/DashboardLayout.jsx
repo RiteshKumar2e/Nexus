@@ -21,6 +21,7 @@ import {
   X,
 } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
+import FloatingCopilot from '../features/copilot/FloatingCopilot.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { useSocket } from '../context/SocketContext.jsx'
 import { useToast } from '../context/ToastContext.jsx'
@@ -151,6 +152,8 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      <FloatingCopilot />
     </div>
   )
 }
