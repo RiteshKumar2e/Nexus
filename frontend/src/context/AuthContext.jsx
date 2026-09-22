@@ -52,8 +52,19 @@ export function AuthProvider({ children }) {
     setUser(null)
   }, [])
 
+  const updateProfile = useCallback(async (name) => {
+    const { data } = await api.put('/auth/profile', { name })
+    localStorage.setItem('nexus_user', JSON.stringify(data.user))
+    setUser(data.user)
+    return data.user
+  }, [])
+
+  const updatePassword = useCallback(async (currentPassword, newPassword) => {
+    await api.put('/auth/password', { currentPassword, newPassword })
+  }, [])
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile, updatePassword }}>
       {children}
     </AuthContext.Provider>
   )

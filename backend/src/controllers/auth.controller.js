@@ -38,3 +38,25 @@ export const login = expressAsyncHandler(async (req, res) => {
 export const me = expressAsyncHandler(async (req, res) => {
   res.json({ user: req.user.toSafeObject() })
 })
+
+export const updateProfile = expressAsyncHandler(async (req, res) => {
+  const { name } = req.body
+  if (!name || !name.trim()) throw new ApiError(400, 'Name is required.')
+
+  req.user.name = name.trim()
+  await req.user.save()
+  res.json({ user: req.user.toSafeObject() })
+})
+
+export const updatePassword = expressAsyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body
+  if (!currentPassword || !newPassword) throw new ApiError(400, 'Current and new password are required.')
+  if (newPassword.length < 8) throw new ApiError(400, 'New password must be at least 8 characters.')
+
+  const user = await User.unscoped().findByPk(req.user.id)
+  if (!(await user.comparePassword(currentPassword))) throw new ApiError(401, 'Current password is incorrect.')
+
+  user.password = newPassword
+  await user.save()
+  res.json({ message: 'Password updated.' })
+})

@@ -77,9 +77,9 @@ function SidebarContent({ onNavigate }) {
         ))}
       </nav>
       <div className="dash-sidebar-footer">
-        <button className="dash-settings-btn">
+        <NavLink to="/settings" onClick={onNavigate} className="dash-settings-btn">
           <Settings style={{ width: 18, height: 18 }} /> Settings
-        </button>
+        </NavLink>
         <div className="dash-user-row">
           <div className="dash-user-info">
             <div className="dash-avatar">

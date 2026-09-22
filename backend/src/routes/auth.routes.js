@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { register, login, me } from '../controllers/auth.controller.js'
+import { register, login, me, updateProfile, updatePassword } from '../controllers/auth.controller.js'
 import { requireAuth } from '../middleware/auth.js'
 import { authLimiter } from '../middleware/rateLimiter.js'
 
@@ -8,5 +8,7 @@ const router = Router()
 router.post('/register', authLimiter, register)
 router.post('/login', authLimiter, login)
 router.get('/me', requireAuth, me)
+router.put('/profile', requireAuth, updateProfile)
+router.put('/password', requireAuth, updatePassword)
 
 export default router
