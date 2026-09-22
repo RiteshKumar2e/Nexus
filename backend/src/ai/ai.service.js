@@ -67,12 +67,31 @@ async function gatherOperationalContext() {
   }
 }
 
+// Light script/keyword heuristic used only for the deterministic fallback
+// (both AI providers down) — the LLM path handles language matching itself
+// via SYSTEM_COPILOT's own instructions. Devanagari script narrows it to
+// Hindi or Bhojpuri; a handful of common Bhojpuri markers pick between them.
+const BHOJPURI_MARKERS = ['बा', 'रहल', 'करत', 'केहू', 'हमरा', 'तोहर', 'ना बा', 'कईसे']
+function detectFallbackLanguage(question) {
+  if (!/[ऀ-ॿ]/.test(question)) return 'en'
+  return BHOJPURI_MARKERS.some((m) => question.includes(m)) ? 'bho' : 'hi'
+}
+
+function buildFallback(lang, context, criticalCount) {
+  const critical = context.medicalUnits.filter((m) => m.status === 'CRITICAL').length
+  if (lang === 'hi') {
+    return `मौजूदा डेटा के अनुसार: ${context.activeIncidents.length} सक्रिय घटनाएं (${criticalCount} गंभीर), ${context.activePlans.length} सक्रिय रिस्पॉन्स प्लान, और ${critical} मेडिकल यूनिट गंभीर स्थिति में हैं। AI नैरेटिव फिलहाल उपलब्ध नहीं है, लेकिन ऊपर दिया गया डेटा लाइव है।`
+  }
+  if (lang === 'bho') {
+    return `अभी के डेटा के मुताबिक: ${context.activeIncidents.length} गो सक्रिय घटना बा (${criticalCount} गंभीर), ${context.activePlans.length} गो रिस्पॉन्स प्लान चालू बा, आ ${critical} गो मेडिकल यूनिट गंभीर हालत में बा। AI वाला जवाब अभी नइखे मिल रहल, बाकी ऊपर के डेटा लाइव बा।`
+  }
+  return `Based on current data: ${context.activeIncidents.length} active incidents (${criticalCount} critical), ${context.activePlans.length} active response plans, and ${critical} medical unit(s) at critical status. AI narrative generation is temporarily unavailable, but the underlying data above is live.`
+}
+
 export async function answerCopilotQuery(question) {
   const context = await gatherOperationalContext()
   const criticalCount = context.activeIncidents.filter((i) => i.severity === 'CRITICAL').length
-  const fallback = `Based on current data: ${context.activeIncidents.length} active incidents (${criticalCount} critical), ${
-    context.activePlans.length
-  } active response plans, and ${context.medicalUnits.filter((m) => m.status === 'CRITICAL').length} medical unit(s) at critical status. AI narrative generation is temporarily unavailable, but the underlying data above is live.`
+  const fallback = buildFallback(detectFallbackLanguage(question), context, criticalCount)
 
   const { text, source } = await completeWithFallback(SYSTEM_COPILOT, buildCopilotPrompt(question, context), fallback)
   return { answer: text, source, context }
