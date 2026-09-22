@@ -3,6 +3,16 @@ import { Sparkles, Send, Loader2 } from 'lucide-react'
 import { queryCopilot } from '../../services/ai.js'
 import '../../styles/CopilotPanel.css'
 
+// The copilot bubble is plain text, but models occasionally slip in
+// markdown anyway — strip the common markers rather than showing raw ** / #.
+function stripMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/`([^`]*)`/g, '$1')
+}
+
 const SUGGESTIONS = [
   'Which district is most critical?',
   'Why was SDRF Team 1 reassigned?',
@@ -29,7 +39,7 @@ export default function CopilotPanel() {
     setLoading(true)
     try {
       const { answer, source } = await queryCopilot(question)
-      setMessages((m) => [...m, { role: 'assistant', text: answer, source }])
+      setMessages((m) => [...m, { role: 'assistant', text: stripMarkdown(answer), source }])
     } catch (err) {
       setMessages((m) => [
         ...m,

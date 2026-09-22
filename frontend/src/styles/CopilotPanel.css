@@ -39,6 +39,7 @@
   padding: 8px 12px;
   font-size: 14px;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 .copilot-bubble-user {
   background: var(--brand-600);
