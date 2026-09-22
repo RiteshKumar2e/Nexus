@@ -4,6 +4,7 @@ import { ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
 import PasswordInput from '../components/PasswordInput.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AuthPages.css'
 
@@ -16,6 +17,7 @@ const ROLES = [
 export default function RegisterPage() {
   useDocumentTitle('Create Account')
   const { register } = useAuth()
+  const { showToast } = useToast()
   const navigate = useNavigate()
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'OPERATOR' })
   const [error, setError] = useState('')
@@ -26,7 +28,8 @@ export default function RegisterPage() {
     setError('')
     setLoading(true)
     try {
-      await register(form)
+      const user = await register(form)
+      showToast(`Account created. Welcome, ${user.name}.`, 'success')
       navigate('/command-center', { replace: true })
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to create account.')

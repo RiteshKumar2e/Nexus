@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { ArrowIcon } from './icons.jsx'
 import '../../styles/Hero.css'
 
 export default function Hero() {
@@ -41,7 +41,7 @@ export default function Hero() {
           className="hero-actions"
         >
           <Link to="/register" className="btn btn-primary">
-            Launch Command Center <ArrowRight style={{ width: 16, height: 16 }} />
+            Launch Command Center <ArrowIcon style={{ width: 16, height: 16 }} />
           </Link>
         </motion.div>
         <motion.div

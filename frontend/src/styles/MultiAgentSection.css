@@ -43,11 +43,20 @@
 }
 
 .agents-diagram {
+  /* Hidden below 640px: the radial label layout has no room to breathe on a
+     narrow phone and was overflowing the viewport horizontally. The agent
+     list to the left already covers the same content, so this is a real
+     progressive-enhancement hide, not a content loss. */
+  display: none;
   position: relative;
   aspect-ratio: 1 / 1;
-  max-width: 420px;
+  max-width: 380px;
   margin: 0 auto;
   width: 100%;
+}
+
+@media (min-width: 640px) {
+  .agents-diagram { display: block; }
 }
 
 .agents-diagram-label {
@@ -62,6 +71,9 @@
   box-shadow: var(--shadow-subtle);
   transform: translate(-50%, -50%);
   white-space: nowrap;
+  max-width: 108px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media (min-width: 1024px) {

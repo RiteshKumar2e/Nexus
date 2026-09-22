@@ -37,16 +37,16 @@ export default function MultiAgentSection() {
               const rad = (a.angle * Math.PI) / 180
               const x = 200 + Math.cos(rad) * 150
               const y = 200 + Math.sin(rad) * 150
-              return <line key={a.name} x1="200" y1="200" x2={x} y2={y} stroke="#DDD8C8" strokeWidth="2" />
+              return <line key={a.name} x1="200" y1="200" x2={x} y2={y} style={{ stroke: 'var(--ink-100)' }} strokeWidth="2" />
             })}
-            <circle cx="200" cy="200" r="56" fill="#20231F" />
-            <text x="200" y="196" textAnchor="middle" fill="#FFFDF7" fontSize="13" fontWeight="700">NEXUS</text>
-            <text x="200" y="212" textAnchor="middle" fill="#FFFDF7" fontSize="10" fontWeight="600">CORE</text>
+            <circle cx="200" cy="200" r="56" style={{ fill: 'var(--ink-900)' }} />
+            <text x="200" y="196" textAnchor="middle" style={{ fill: 'var(--bg-surface)' }} fontSize="13" fontWeight="700">NEXUS</text>
+            <text x="200" y="212" textAnchor="middle" style={{ fill: 'var(--bg-surface)' }} fontSize="10" fontWeight="600">CORE</text>
             {AGENTS.map((a) => {
               const rad = (a.angle * Math.PI) / 180
               const x = 200 + Math.cos(rad) * 150
               const y = 200 + Math.sin(rad) * 150
-              return <circle key={a.name} cx={x} cy={y} r="7" fill="#C89B3C" />
+              return <circle key={a.name} cx={x} cy={y} r="7" style={{ fill: 'var(--brand-600)' }} />
             })}
           </svg>
           {AGENTS.map((a) => {

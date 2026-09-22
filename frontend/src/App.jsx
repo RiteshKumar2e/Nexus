@@ -25,6 +25,8 @@ const DecisionLogPage = lazy(() => import('./pages/DecisionLogPage.jsx'))
 const AnalyticsPage = lazy(() => import('./pages/AnalyticsPage.jsx'))
 const SimulationPage = lazy(() => import('./pages/SimulationPage.jsx'))
 const DataSourcesPage = lazy(() => import('./pages/DataSourcesPage.jsx'))
+const TermsPage = lazy(() => import('./pages/TermsPage.jsx'))
+const PrivacyPage = lazy(() => import('./pages/PrivacyPage.jsx'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'))
 
 export default function App() {
@@ -33,6 +35,9 @@ export default function App() {
       <Routes>
         <Route element={<MarketingLayout />}>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/data-sources" element={<DataSourcesPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
         </Route>
 
         <Route path="/login" element={<LoginPage />} />
@@ -61,7 +66,6 @@ export default function App() {
           <Route path="/decision-log" element={<DecisionLogPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/simulation" element={<SimulationPage />} />
-          <Route path="/data-sources" element={<DataSourcesPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

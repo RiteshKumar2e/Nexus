@@ -1,4 +1,3 @@
-import { ShieldCheck } from 'lucide-react'
 import '../../styles/HumanControlSection.css'
 
 export default function HumanControlSection() {
@@ -6,7 +5,7 @@ export default function HumanControlSection() {
     <section className="human-section">
       <div className="container-page human-grid">
         <div className="human-text">
-          <p className="human-eyebrow"><ShieldCheck /> Human oversight</p>
+          <p className="human-eyebrow">Human oversight</p>
           <h2>
             AI recommends.
             <br />

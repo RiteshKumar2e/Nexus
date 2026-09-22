@@ -4,12 +4,14 @@ import { ArrowRight, ArrowLeft, AlertCircle } from 'lucide-react'
 import Logo from '../components/Logo.jsx'
 import PasswordInput from '../components/PasswordInput.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
+import { useToast } from '../context/ToastContext.jsx'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
 import '../styles/AuthPages.css'
 
 export default function LoginPage() {
   useDocumentTitle('Sign In')
   const { login } = useAuth()
+  const { showToast } = useToast()
   const navigate = useNavigate()
   const location = useLocation()
   const [form, setForm] = useState({ email: '', password: '' })
@@ -21,7 +23,8 @@ export default function LoginPage() {
     setError('')
     setLoading(true)
     try {
-      await login(form.email, form.password)
+      const user = await login(form.email, form.password)
+      showToast(`Welcome back, ${user.name}.`, 'success')
       const dest = location.state?.from?.pathname || '/command-center'
       navigate(dest, { replace: true })
     } catch (err) {

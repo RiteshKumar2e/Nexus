@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
+import { ArrowIcon } from './icons.jsx'
 import '../../styles/FinalCTA.css'
 
 export default function FinalCTA() {
@@ -12,7 +12,7 @@ export default function FinalCTA() {
         </p>
         <div className="finalcta-actions">
           <Link to="/register" className="btn btn-primary">
-            Launch Command Center <ArrowRight style={{ width: 16, height: 16 }} />
+            Launch Command Center <ArrowIcon style={{ width: 16, height: 16 }} />
           </Link>
           <a href="#simulation" className="btn btn-secondary">
             View Simulation

@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Play, Waves, HeartPulse, Home, TriangleAlert } from 'lucide-react'
+import { PlayIcon, WaveIcon, MedicalIcon, HomeIcon, AlertIcon } from './icons.jsx'
 import '../../styles/SimulationSection.css'
 
 const EVENTS = [
-  { key: 'road', icon: TriangleAlert, label: 'Trigger Road Block' },
-  { key: 'hospital', icon: HeartPulse, label: 'Medical Unit Critical' },
-  { key: 'shelter', icon: Home, label: 'Fill Relief Camp' },
-  { key: 'flood', icon: Waves, label: 'Increase Flood' },
+  { key: 'road', icon: AlertIcon, label: 'Trigger Road Block' },
+  { key: 'hospital', icon: MedicalIcon, label: 'Medical Unit Critical' },
+  { key: 'shelter', icon: HomeIcon, label: 'Fill Relief Camp' },
+  { key: 'flood', icon: WaveIcon, label: 'Increase Flood' },
 ]
 
 export default function SimulationSection() {
@@ -29,7 +29,7 @@ export default function SimulationSection() {
             before it's ever needed in the field.
           </p>
           <Link to="/register" className="btn btn-primary">
-            <Play style={{ width: 16, height: 16 }} /> Start Simulation
+            <PlayIcon style={{ width: 16, height: 16 }} /> Start Simulation
           </Link>
         </div>
 

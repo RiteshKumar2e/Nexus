@@ -1,4 +1,4 @@
-import { Map, GitCompareArrows, PackageSearch, MessageSquareText, UserCheck, ArrowRight } from 'lucide-react'
+import { ArrowIcon } from './icons.jsx'
 import '../../styles/FeatureShowcase.css'
 
 export default function FeatureShowcase() {
@@ -15,7 +15,7 @@ export default function FeatureShowcase() {
           <div className="card feature-card feature-card-wide">
             <div className="feature-card-wide-inner">
               <div className="feature-card-wide-text">
-                <h3><Map /> Live Situation Map</h3>
+                <h3>Live Situation Map</h3>
                 <p>
                   Every incident, road, response team, medical unit, and relief camp plotted on a single
                   operational map that updates as the situation evolves.
@@ -37,21 +37,21 @@ export default function FeatureShowcase() {
 
           {/* Adaptive Planning */}
           <div className="card feature-card">
-            <h3><GitCompareArrows /> Adaptive Planning</h3>
+            <h3>Adaptive Planning</h3>
             <p>
               When a route or resource becomes unavailable, the active plan is invalidated and a
               new one is generated in its place.
             </p>
             <div className="feature-plan-row">
               <span className="badge badge-neutral badge-strike">Plan 17</span>
-              <ArrowRight style={{ width: 14, height: 14, color: 'var(--ink-300)' }} />
+              <ArrowIcon style={{ width: 14, height: 14, color: 'var(--ink-300)' }} />
               <span className="badge badge-success">Plan 18 Activated</span>
             </div>
           </div>
 
           {/* Resource Intelligence */}
           <div className="card feature-card">
-            <h3><PackageSearch /> Resource Intelligence</h3>
+            <h3>Resource Intelligence</h3>
             <p>
               Ambulances, rescue teams, water, food, and medical supplies, tracked with live
               allocation and consumption.
@@ -65,7 +65,7 @@ export default function FeatureShowcase() {
 
           {/* AI Response Copilot */}
           <div className="card feature-card">
-            <h3><MessageSquareText /> AI Response Copilot</h3>
+            <h3>AI Response Copilot</h3>
             <p>Natural-language questions, answered from live operational data.</p>
             <div className="feature-chat-box">
               "What needs immediate attention?"
@@ -74,7 +74,7 @@ export default function FeatureShowcase() {
 
           {/* Human Oversight */}
           <div className="card feature-card">
-            <h3><UserCheck /> Human Oversight</h3>
+            <h3>Human Oversight</h3>
             <p>Every AI recommendation waits for an operator before it becomes an action.</p>
             <div className="feature-approval-row">
               <span className="btn btn-secondary">Approve</span>

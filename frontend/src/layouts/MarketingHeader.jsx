@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { MenuIcon, CloseIcon } from '../features/landing/icons.jsx'
 import Logo from '../components/Logo.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import '../styles/MarketingHeader.css'
@@ -63,8 +63,8 @@ export default function MarketingHeader() {
           </Link>
         </div>
 
-        <button className="site-header-burger" onClick={() => setOpen((v) => !v)}>
-          {open ? <X style={{ width: 20, height: 20 }} /> : <Menu style={{ width: 20, height: 20 }} />}
+        <button className="site-header-burger" onClick={() => setOpen((v) => !v)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>
+          {open ? <CloseIcon style={{ width: 20, height: 20 }} /> : <MenuIcon style={{ width: 20, height: 20 }} />}
         </button>
       </div>
 

@@ -43,7 +43,7 @@
 
 .btn-danger {
   background: var(--critical-600);
-  color: #fffdf7;
+  color: var(--bg-surface);
 }
 .btn-danger:hover {
   background: var(--critical-700);

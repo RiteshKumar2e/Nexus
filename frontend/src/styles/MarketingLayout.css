@@ -3,6 +3,10 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-page);
+  /* System font stack for the marketing site only — the dashboard keeps
+     --font-sans (Inter). Matches the OS's own UI type instead of shipping
+     another web font just for the landing page. */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 .marketing-layout-main {
