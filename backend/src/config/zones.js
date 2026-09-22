@@ -19,7 +19,12 @@ export const ZONES = [
   { id: 'KATIHAR', name: 'Katihar', type: 'district', lat: 25.5394, lng: 87.5700 },
   { id: 'ARARIA', name: 'Araria', type: 'district', lat: 26.1512, lng: 87.4837 },
   { id: 'SITAMARHI', name: 'Sitamarhi', type: 'district', lat: 26.5900, lng: 85.4900 },
-  { id: 'EAST_CHAMPARAN', name: 'East Champaran', type: 'district', lat: 26.6469, lng: 84.9170 },
+  { id: 'WEST_CHAMPARAN', name: 'West Champaran', type: 'district', lat: 26.8020, lng: 84.5019 },
+  { id: 'SARAN', name: 'Saran', type: 'district', lat: 25.7810, lng: 84.7500 },
+  { id: 'BUXAR', name: 'Buxar', type: 'district', lat: 25.5645, lng: 83.9767 },
+  { id: 'LAKHISARAI', name: 'Lakhisarai', type: 'district', lat: 25.1747, lng: 86.0947 },
+  { id: 'MADHEPURA', name: 'Madhepura', type: 'district', lat: 25.9200, lng: 86.7900 },
+  { id: 'KISHANGANJ', name: 'Kishanganj', type: 'district', lat: 26.1023, lng: 87.9513 },
 ]
 
 export function getZone(id) {
