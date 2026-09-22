@@ -5,7 +5,7 @@ import ApiError from '../utils/ApiError.js'
 import { emitEvent } from '../socket/index.js'
 import { recalculateResponsePlan } from '../services/replanning.service.js'
 import { resolveEventPayload } from '../simulation/engine.js'
-import { seedDatabase } from '../seed/seed.js'
+import { resetScenario } from '../seed/seed.js'
 
 const EVENT_LABELS = {
   ROAD_BLOCKED: 'Road blocked',
@@ -54,8 +54,7 @@ export const resumeSimulation = expressAsyncHandler(async (req, res) => {
 })
 
 export const resetSimulation = expressAsyncHandler(async (req, res) => {
-  await seedDatabase()
-  const state = await getOrCreateState()
+  const state = await resetScenario()
   emitEvent('simulation:reset', {})
   res.json({ state, message: 'Simulation reset to initial scenario state.' })
 })

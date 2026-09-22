@@ -14,7 +14,9 @@ import {
   CommunityKitchen,
   Alert,
   ResponsePlan,
+  PlanAction,
   DecisionLog,
+  SimulationEvent,
   SimulationState,
 } from '../models/associations.js'
 import {
@@ -29,16 +31,11 @@ import {
   buildIncidents,
 } from './data.js'
 
-export async function seedDatabase() {
-  // Drop and recreate every table for a clean, fully deterministic scenario reset.
-  await syncModels({ force: true })
-
-  await Promise.all([
-    User.create({ name: 'Commander Rao', email: 'commander@nexus.io', password: 'password123', role: 'COMMANDER' }),
-    User.create({ name: 'Operator Mehta', email: 'operator@nexus.io', password: 'password123', role: 'OPERATOR' }),
-    User.create({ name: 'Observer Singh', email: 'viewer@nexus.io', password: 'password123', role: 'VIEWER' }),
-  ])
-
+// Populates every scenario table (districts, roads, teams, incidents, plans,
+// decision log, ...) from a clean slate. Does NOT touch the Users table —
+// callers that need a fresh Users table too (only the CLI seed below) create
+// those separately first.
+async function seedScenarioData() {
   await District.bulkCreate(DISTRICTS)
   await Road.bulkCreate(ROADS)
 
@@ -122,9 +119,49 @@ export async function seedDatabase() {
   })
 
   await SimulationState.create({ scenario: 'BIHAR FLOOD RESPONSE 2026', status: 'RUNNING', startedAt: new Date() })
+}
+
+// Full reset for local/CI use: drops and recreates every table, including
+// Users — only safe to run from the CLI against a database you're OK wiping
+// completely. NEVER call this from an in-app request handler (see
+// resetScenario below for the in-app "Reset" button's safe equivalent).
+export async function seedDatabase() {
+  await syncModels({ force: true })
+
+  await Promise.all([
+    User.create({ name: 'Commander Rao', email: 'commander@nexus.io', password: 'password123', role: 'COMMANDER' }),
+    User.create({ name: 'Operator Mehta', email: 'operator@nexus.io', password: 'password123', role: 'OPERATOR' }),
+    User.create({ name: 'Observer Singh', email: 'viewer@nexus.io', password: 'password123', role: 'VIEWER' }),
+  ])
+
+  await seedScenarioData()
 
   console.log('[seed] Database seeded successfully.')
   console.log('[seed] Demo accounts: commander@nexus.io / operator@nexus.io / viewer@nexus.io (password: password123)')
+}
+
+// In-app "Reset" button equivalent: clears and rebuilds every scenario table
+// back to the initial walkthrough state, WITHOUT ever touching Users or
+// dropping the schema. Delete order respects foreign keys (children first).
+export async function resetScenario() {
+  await PlanAction.destroy({ where: {}, force: true })
+  await DecisionLog.destroy({ where: {}, force: true })
+  await ResponsePlan.destroy({ where: {}, force: true })
+  await Incident.destroy({ where: {}, force: true })
+  await SimulationEvent.destroy({ where: {}, force: true })
+  await Alert.destroy({ where: {}, force: true })
+  await CommunityKitchen.destroy({ where: {}, force: true })
+  await ReliefCamp.destroy({ where: {}, force: true })
+  await MedicalUnit.destroy({ where: {}, force: true })
+  await Resource.destroy({ where: {}, force: true })
+  await ResponseTeam.destroy({ where: {}, force: true })
+  await Road.destroy({ where: {}, force: true })
+  await District.destroy({ where: {}, force: true })
+  await SimulationState.destroy({ where: {}, force: true })
+
+  await seedScenarioData()
+
+  return SimulationState.findOne()
 }
 
 const isMain = process.argv[1] && process.argv[1].endsWith('seed.js')
