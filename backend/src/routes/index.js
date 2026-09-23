@@ -14,6 +14,7 @@ import simulationRoutes from './simulation.routes.js'
 import aiRoutes from './ai.routes.js'
 import decisionLogRoutes from './decisionLog.routes.js'
 import dashboardRoutes from './dashboard.routes.js'
+import contactRoutes from './contact.routes.js'
 
 const router = Router()
 
@@ -32,5 +33,6 @@ router.use('/simulation', simulationRoutes)
 router.use('/ai', aiRoutes)
 router.use('/decision-log', decisionLogRoutes)
 router.use('/dashboard', dashboardRoutes)
+router.use('/contact', contactRoutes)
 
 export default router

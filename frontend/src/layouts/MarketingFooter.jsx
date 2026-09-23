@@ -46,7 +46,7 @@ const COLUMNS = [
 
 export default function MarketingFooter() {
   return (
-    <footer className="site-footer" id="contact">
+    <footer className="site-footer">
       <div className="container-page site-footer-inner">
         <div className="site-footer-grid">
           <div className="site-footer-brand">

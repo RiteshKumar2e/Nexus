@@ -16,16 +16,35 @@ const NAV = [
 export default function MarketingHeader() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState(null)
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const isHome = location.pathname === '/'
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 8)
+      if (!isHome) return
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4
+      // Pick the section whose top most recently passed under the header,
+      // regardless of the order sections appear in NAV.
+      let current = null
+      let bestTop = -Infinity
+      for (const { sectionId } of NAV) {
+        if (!sectionId) continue
+        const top = document.getElementById(sectionId)?.getBoundingClientRect().top
+        if (top != null && top <= 120 && top > bestTop) {
+          bestTop = top
+          current = sectionId
+        }
+      }
+      setActiveSection(atBottom ? 'contact' : current)
+    }
     onScroll()
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [location.pathname])
+  }, [location.pathname, isHome])
 
   function goToSection(sectionId) {
     setOpen(false)
@@ -52,7 +71,13 @@ export default function MarketingHeader() {
 
         <nav className="site-nav">
           {NAV.map((item) => (
-            <button key={item.label} type="button" onClick={() => goToSection(item.sectionId)} className="site-nav-link">
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => goToSection(item.sectionId)}
+              className={`site-nav-link ${isHome && activeSection === item.sectionId ? 'is-active' : ''}`}
+              aria-current={isHome && activeSection === item.sectionId ? 'true' : undefined}
+            >
               {item.label}
             </button>
           ))}

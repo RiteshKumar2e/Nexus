@@ -12,3 +12,9 @@
 .marketing-layout-main {
   flex: 1 1 auto;
 }
+
+/* Keep section headings clear of the 64px sticky header when jumped to. */
+.marketing-layout section[id],
+.marketing-layout footer[id] {
+  scroll-margin-top: 72px;
+}

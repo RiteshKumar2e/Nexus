@@ -33,6 +33,24 @@
 .site-nav-link:hover {
   color: var(--ink-900);
 }
+.site-nav-link {
+  position: relative;
+  padding: 6px 0;
+}
+.site-nav-link.is-active {
+  color: var(--ink-900);
+  font-weight: 600;
+}
+.site-nav-link.is-active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand-600);
+}
 
 .site-header-actions {
   display: none;

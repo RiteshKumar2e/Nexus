@@ -14,6 +14,7 @@ import PlanAction from './PlanAction.js'
 import DecisionLog from './DecisionLog.js'
 import SimulationEvent from './SimulationEvent.js'
 import SimulationState from './SimulationState.js'
+import ContactMessage from './ContactMessage.js'
 
 Incident.belongsTo(ResponseTeam, { as: 'assignedTeam', foreignKey: 'assignedTeamId' })
 ResponseTeam.hasMany(Incident, { foreignKey: 'assignedTeamId' })
@@ -52,4 +53,5 @@ export {
   DecisionLog,
   SimulationEvent,
   SimulationState,
+  ContactMessage,
 }

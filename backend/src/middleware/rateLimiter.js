@@ -16,6 +16,14 @@ export const authLimiter = rateLimit({
   message: { message: 'Too many attempts. Please try again later.' },
 })
 
+export const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many messages sent. Please try again later.' },
+})
+
 export const aiLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 20,
