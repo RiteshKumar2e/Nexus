@@ -52,5 +52,5 @@ const MAP = {
 export default function StatusBadge({ status, label }) {
   const key = String(status || '').toLowerCase().replace(/\s+/g, '_')
   const cls = MAP[key] || 'badge-neutral'
-  return <span className={cls}>{label || String(status || '').replace(/_/g, ' ')}</span>
+  return <span className={`badge ${cls}`}>{label || String(status || '').replace(/_/g, ' ')}</span>
 }

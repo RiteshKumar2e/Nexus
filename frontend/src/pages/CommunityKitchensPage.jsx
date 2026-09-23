@@ -1,13 +1,28 @@
 import { useState, useEffect, useCallback } from 'react'
-import { CookingPot } from 'lucide-react'
+import { CookingPot, MapPin } from 'lucide-react'
 import { getCommunityKitchens } from '../services/communityKitchens.js'
 import { useSocket } from '../context/SocketContext.jsx'
 import StatusBadge from '../components/StatusBadge.jsx'
 import LoadingState from '../components/LoadingState.jsx'
 import ErrorState from '../components/ErrorState.jsx'
+import OpsPageHeader from '../components/OpsPageHeader.jsx'
+import SummaryStrip from '../components/SummaryStrip.jsx'
+import OpsToolbar from '../components/OpsToolbar.jsx'
 import { getZoneName } from '../data/zones.js'
 import { useDocumentTitle } from '../hooks/useDocumentTitle.js'
-import '../styles/ResourceStatCards.css'
+
+const SUPPLY_FILTERS = [
+  { value: 'ALL', label: 'All' },
+  { value: 'CRITICAL_SHORTAGE', label: 'Critical shortage' },
+  { value: 'LIMITED', label: 'Limited' },
+  { value: 'AVAILABLE', label: 'Available' },
+]
+
+function toneFor(k) {
+  if (k.foodSupplyStatus === 'CRITICAL_SHORTAGE') return 'critical'
+  if (k.foodSupplyStatus === 'LIMITED' || k.status === 'SETTING_UP') return 'warning'
+  return 'ok'
+}
 
 export default function CommunityKitchensPage() {
   useDocumentTitle('Community Kitchens')
@@ -15,6 +30,8 @@ export default function CommunityKitchensPage() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [query, setQuery] = useState('')
+  const [filter, setFilter] = useState('ALL')
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -40,31 +57,62 @@ export default function CommunityKitchensPage() {
   if (loading) return <LoadingState label="Loading community kitchens..." />
   if (error) return <ErrorState message={error} onRetry={load} />
 
+  const q = query.trim().toLowerCase()
+  const visible = items.filter((k) => {
+    if (filter !== 'ALL' && k.foodSupplyStatus !== filter) return false
+    if (!q) return true
+    return [k.name, k.location, getZoneName(k.district)].some((v) => v?.toLowerCase().includes(q))
+  })
+  const count = (fn) => items.filter(fn).length
+
   return (
     <div className="page">
-      <div className="page-header-row">
-        <div>
-          <h1 className="page-title"><CookingPot /> Community Kitchens</h1>
-          <p className="page-subtext">Operational Simulation &middot; food supply and distribution status by kitchen.</p>
-        </div>
-      </div>
+      <OpsPageHeader
+        icon={CookingPot}
+        title="Community Kitchens"
+        subtitle="Food supply and distribution status for every kitchen serving flood-affected districts."
+      />
 
-      <div className="card-grid card-grid-2 card-grid-3">
-        {items.map((k) => (
-          <div key={k._id} className={`card entity-card ${k.foodSupplyStatus === 'CRITICAL_SHORTAGE' ? 'card-ring-critical' : ''}`}>
-            <div className="entity-card-header">
-              <p className="entity-card-title">{k.name}</p>
-              <StatusBadge status={k.status} />
-            </div>
-            <p className="stat-card-category">{getZoneName(k.district)} &middot; {k.location}</p>
-            <div className="stat-card-trio">
-              <div><p className="stat-card-quad-value" style={{ fontSize: 13 }}><StatusBadge status={k.foodSupplyStatus} /></p><p className="stat-card-quad-label">Food Supply</p></div>
-              <div><p className="stat-card-quad-value" style={{ fontSize: 13 }}><StatusBadge status={k.distributionStatus} /></p><p className="stat-card-quad-label">Distribution</p></div>
-              <div><p className="stat-card-quad-value" style={{ fontSize: 13 }}><StatusBadge status={k.priority} /></p><p className="stat-card-quad-label">Priority</p></div>
-            </div>
-          </div>
-        ))}
-      </div>
+      <SummaryStrip
+        items={[
+          { label: 'Kitchens', value: items.length },
+          { label: 'Serving now', value: count((k) => k.distributionStatus === 'ONGOING'), tone: 'success' },
+          { label: 'Critical shortage', value: count((k) => k.foodSupplyStatus === 'CRITICAL_SHORTAGE'), tone: 'critical' },
+          { label: 'Setting up', value: count((k) => k.status === 'SETTING_UP'), tone: 'warning' },
+        ]}
+      />
+
+      <OpsToolbar
+        query={query}
+        onQuery={setQuery}
+        placeholder="Search kitchen, district, location..."
+        filters={SUPPLY_FILTERS.map((f) => ({ ...f, count: f.value === 'ALL' ? items.length : count((k) => k.foodSupplyStatus === f.value) }))}
+        active={filter}
+        onFilter={setFilter}
+      />
+
+      {visible.length === 0 ? (
+        <div className="ops-empty">No kitchens match this filter.</div>
+      ) : (
+        <div className="ops-grid">
+          {visible.map((k) => (
+            <article key={k._id} className="ops-card" data-tone={toneFor(k)}>
+              <header className="ops-card-head">
+                <div style={{ minWidth: 0 }}>
+                  <h3 className="ops-card-title">{k.name}</h3>
+                  <p className="ops-card-meta"><MapPin /> {getZoneName(k.district)} · {k.location}</p>
+                </div>
+                <StatusBadge status={k.status} />
+              </header>
+              <dl className="ops-kv">
+                <div><dt>Food supply</dt><dd><StatusBadge status={k.foodSupplyStatus} /></dd></div>
+                <div><dt>Distribution</dt><dd><StatusBadge status={k.distributionStatus} /></dd></div>
+                <div><dt>Priority</dt><dd><StatusBadge status={k.priority} /></dd></div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
