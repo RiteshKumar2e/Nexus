@@ -84,7 +84,7 @@ export default function ContactSection() {
               <div className="contact-row">
                 <label className="contact-field">
                   <span className="field-label">Full name <em>*</em></span>
-                  <input className="input" required maxLength={120} value={form.name} onChange={set('name')} placeholder="Anjali Sharma" />
+                  <input className="input" required maxLength={120} value={form.name} onChange={set('name')} placeholder="Enter your name" />
                 </label>
                 <label className="contact-field">
                   <span className="field-label">Phone number <em>*</em></span>
@@ -97,7 +97,7 @@ export default function ContactSection() {
                     title="Enter a valid phone number"
                     value={form.phone}
                     onChange={set('phone')}
-                    placeholder="+91 98765 43210"
+                    placeholder="Enter your phone number"
                   />
                 </label>
               </div>
