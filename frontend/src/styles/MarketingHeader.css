@@ -4,22 +4,24 @@
   z-index: 50;
   border-bottom: 1px solid transparent;
   background: var(--bg-page);
-  transition: border-color 150ms;
+  transition: background-color 200ms, border-color 200ms;
 }
 .site-header.is-scrolled {
   border-bottom-color: var(--ink-100);
 }
 
 .site-header-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   height: 64px;
 }
 
 .site-nav {
   display: none;
   align-items: center;
+  justify-content: center;
+  justify-self: center;
   gap: 32px;
 }
 .site-nav-link {
@@ -35,10 +37,13 @@
 .site-header-actions {
   display: none;
   align-items: center;
+  justify-content: flex-end;
   gap: 12px;
 }
 
 .site-header-burger {
+  grid-column: 3;
+  justify-self: end;
   padding: 8px;
   margin-right: -8px;
   color: var(--ink-700);

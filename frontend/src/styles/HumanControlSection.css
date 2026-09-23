@@ -1,6 +1,6 @@
 .human-section {
   padding: 80px 0;
-  background: var(--ink-900);
+  background: var(--info-600);
   color: var(--bg-surface);
 }
 
@@ -35,7 +35,7 @@
 }
 .human-text p {
   margin-top: 16px;
-  color: var(--ink-300);
+  color: var(--ink-200);
   line-height: 1.6;
   max-width: 420px;
 }

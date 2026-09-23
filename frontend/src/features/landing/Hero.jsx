@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { ArrowIcon } from './icons.jsx'
+import HeroPreview from './HeroPreview.jsx'
 import '../../styles/Hero.css'
 
 export default function Hero() {
@@ -23,7 +24,7 @@ export default function Hero() {
         >
           Disasters change by the minute.
           <br />
-          Your response should too.
+          Your <span className="hero-accent">response</span> should too.
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -43,6 +44,9 @@ export default function Hero() {
           <Link to="/register" className="btn btn-primary">
             Launch Command Center <ArrowIcon style={{ width: 16, height: 16 }} />
           </Link>
+          <a href="#how-it-works" className="btn btn-secondary">
+            See How It Works
+          </a>
         </motion.div>
         <motion.div
           initial={{ opacity: 0 }}
@@ -57,6 +61,15 @@ export default function Hero() {
           <span>Decision Support</span>
         </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="container-page hero-preview-wrap"
+      >
+        <HeroPreview />
+      </motion.div>
     </section>
   )
 }

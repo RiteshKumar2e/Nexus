@@ -1,9 +1,11 @@
 .hero {
   position: relative;
-  padding: 72px 0 80px;
+  padding: 72px 0 96px;
+  background: var(--ink-900);
 }
 
 .hero-content {
+  position: relative;
   max-width: 720px;
   margin: 0 auto;
   text-align: center;
@@ -14,6 +16,7 @@
 
 .hero-eyebrow {
   margin-bottom: 20px;
+  color: var(--brand-400);
 }
 
 .hero-headline {
@@ -21,13 +24,17 @@
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.01em;
-  color: var(--ink-900);
+  color: #ffffff;
+}
+
+.hero-accent {
+  color: var(--brand-500);
 }
 
 .hero-subtext {
   margin-top: 24px;
   font-size: 18px;
-  color: var(--ink-500);
+  color: var(--ink-300);
   line-height: 1.6;
   max-width: 560px;
 }
@@ -42,8 +49,17 @@
 .hero-actions .btn {
   padding: 12px 20px;
 }
+.hero-actions .btn-secondary {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+.hero-actions .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
 
 .hero-meta {
+  position: relative;
   margin-top: 48px;
   display: flex;
   align-items: center;
@@ -59,7 +75,12 @@
   width: 4px;
   height: 4px;
   border-radius: 999px;
-  background: var(--ink-300);
+  background: var(--ink-600);
+}
+
+.hero-preview-wrap {
+  position: relative;
+  margin-bottom: -72px;
 }
 
 @media (min-width: 640px) {

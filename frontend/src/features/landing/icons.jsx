@@ -92,3 +92,42 @@ export function HomeIcon(props) {
     </svg>
   )
 }
+
+export function PinIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 21c4.5-4.6 7-8.3 7-11.2A7 7 0 0 0 5 9.8C5 12.7 7.5 16.4 12 21Z" />
+      <circle cx="12" cy="9.7" r="2.2" />
+    </svg>
+  )
+}
+
+export function UsersIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <circle cx="9" cy="8.5" r="3" />
+      <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
+      <path d="M16 8.5a2.6 2.6 0 1 1 0-5.2" />
+      <path d="M15 14c2.5 0.3 4.5 2.1 4.5 5" />
+    </svg>
+  )
+}
+
+export function GridIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <rect x="4" y="4" width="7" height="7" rx="1.2" />
+      <rect x="13" y="4" width="7" height="7" rx="1.2" />
+      <rect x="4" y="13" width="7" height="7" rx="1.2" />
+      <rect x="13" y="13" width="7" height="7" rx="1.2" />
+    </svg>
+  )
+}
+
+export function SparkIcon(props) {
+  return (
+    <svg {...base} {...props}>
+      <path d="M12 3.5 L13.4 9 L19 10.4 L13.4 11.8 L12 17.3 L10.6 11.8 L5 10.4 L10.6 9 Z" />
+    </svg>
+  )
+}

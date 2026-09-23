@@ -22,9 +22,10 @@ export default function MarketingHeader() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
+    onScroll()
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [location.pathname])
 
   function goToSection(sectionId) {
     setOpen(false)
