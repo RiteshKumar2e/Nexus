@@ -1,6 +1,7 @@
 import expressAsyncHandler from 'express-async-handler'
 import ContactMessage, { INQUIRY_TYPES } from '../models/ContactMessage.js'
 import ApiError from '../utils/ApiError.js'
+import { sendContactNotification } from '../services/mail.service.js'
 
 const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : '')
 
@@ -22,6 +23,11 @@ export const submitContact = expressAsyncHandler(async (req, res) => {
   const entry = await ContactMessage.create({
     name, phone, email: email || null, organization: organization || null,
     district: district || null, address: address || null, inquiryType, message,
+  })
+
+  // The message is already saved; a mail failure shouldn't fail the submission.
+  sendContactNotification(entry).catch((err) => {
+    console.warn('[mail] contact notification failed:', err.response?.data?.message || err.message)
   })
 
   res.status(201).json({ id: entry.id, message: 'Thanks — your message has been received.' })
